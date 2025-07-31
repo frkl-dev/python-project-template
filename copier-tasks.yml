@@ -1,0 +1,28 @@
+_tasks:
+  - command: "git init >> .init.log 2>&1"
+    when: "{{ _copier_operation == 'copy' }}"
+  - command: >
+      {% if _copier_conf.os == 'windows' %}
+      git checkout -b develop >> .init.log 2>&1 || exit 0
+      {% else %}
+      git checkout -b develop >> .init.log 2>&1 || true
+      {% endif %}
+    when: "{{ _copier_operation == 'copy' }}"
+  - command: "uv run pre-commit install >> .init.log 2>&1"
+    when: "{{ _copier_operation == 'copy' }}"
+  - command: "uv run pre-commit install --hook-type commit-msg >> .init.log 2>&1"
+    when: "{{ _copier_operation == 'copy' }}"
+  - command: 'git add "*" ".*" >> .init.log 2>&1'
+    when: "{{ _copier_operation == 'copy' }}"
+  - command: >
+      {% if _copier_conf.os == 'windows' %}
+      uv run pre-commit run --all-files >> .init.log 2>&1 || exit 0
+      {% else %}
+      uv run pre-commit run --all-files >> .init.log 2>&1 || true
+      {% endif %}
+    when: "{{ _copier_operation == 'copy' }}"
+  - command: 'git add "*" ".*" >> .init.log 2>&1'
+    when: "{{ _copier_operation == 'copy' }}"
+  - command: 'git commit -m "chore: initial commit" >> .init.log 2>&1'
+    when: "{{ _copier_operation == 'copy' }}"
+

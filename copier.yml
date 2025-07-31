@@ -1,0 +1,76 @@
+_min_copier_version: "9"
+_envops:
+  autoescape: false
+  keep_trailing_newline: true
+_subdirectory: project-files
+_templates_suffix: .jinja
+_preserve_symlinks: true
+_exclude:
+  - "copier.yaml"
+  - "copier.yml"
+  - "~*"
+  - "*py[co]"
+  - "__pycache__"
+  - ".git"
+  - ".DS_Store"
+  - ".svn"
+  - "template_docs"
+  - "{% if _copier_operation == 'update' -%}TODO.md{% endif %}"
+
+---
+!include copier-messages.yml
+---
+
+---
+!include copier-tasks.yml
+---
+
+full_name:
+  type: str
+  help: "Your full name."
+  validator: >-
+    {% if not full_name %}No name provided{% endif %}
+
+email:
+  type: str
+  help: "Your email address."
+  validator: >-
+    {% if not email %}
+    Email is required
+    {% elif not (email | regex_search('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$')) %}
+    Please provide a valid email address
+    {% endif %}
+  
+
+project_name:
+  type: str
+  help: "The name of the project."
+
+project_slug:
+  type: str
+  help: "The project slug for the plugin."
+  default: "{{ project_name|lower|replace(' ', '_')|replace('-', '_')|replace('.', '_') }}"
+  when: false
+
+project_short_description:
+  type: str
+  help: "A short description of the plugin."
+  validator: >-
+    {% if not project_short_description %}
+    Please provide a short description for your plugin
+    {% endif %}
+
+---
+!include copier-license.yml
+---
+
+github_user:
+  type: str
+  help: "Your github username or organization."
+
+anaconda_user:
+  type: str
+  help: "Your anaconda username or organization (optional)."
+
+
+

@@ -1,0 +1,61 @@
+_message_before_copy: |
+  
+  You are about to create a new Python project.
+  
+  You'll be asked a series of questions; the answers will be used to prepare
+  a basic, pre-configured Python project skeleton.
+  
+  For more information, visit:
+  
+  https://github.com/frkl-dev/python-project-template
+
+_message_after_copy: |
+  
+  Your project '{{ project_name }}' has been created successfully.
+  
+  Check out the documentation how to use the features included in this template here:
+  
+  https://github.com/frkl-dev/python-project-template
+  
+  The next steps are:
+  
+  1. change directory to the project root
+  
+    cd {{ _copier_conf.dst_path }}
+  
+  2. create a new repository in your Github account ({{ github_user }}) with the name:
+  
+    {{ project_slug }}
+  
+  3. add the Github repository as remote:
+  
+    git remote add origin git@github.com:{{ github_user }}/{{ project_slug }}.git
+    
+    # or:
+  
+    git remote add origin https://github.com/{{ github_user }}/{{ project_slug }}.git
+  
+  4. push the initial version:
+  
+    git push --set-upstream origin develop
+  
+    Now visit the Github Actions tab in your new repo and check that the pre-configured actions all run without error:
+  
+    https://github.com/{{ github_user }}/{{ project_slug }}/actions
+  
+  5. check the `TODO.md` file in the project folder for details on how to publish your project to PyPI and Anaconda:
+  
+    https://github.com/{{ github_user }}/{{ project_slug }}/blob/develop/TODO.md
+  
+
+_message_after_update: |
+  
+  Your project '{{ project_name }}' has been updated.
+  
+  Check the changes manually using:
+  
+    git status
+    # and/or
+    git diff
+  
+  In case of conflicts, you'll have to resolve those before committing/pushing the changes to your remote repository.
