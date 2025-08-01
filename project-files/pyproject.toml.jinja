@@ -52,7 +52,7 @@ packages = ["src/{{ project_base_module }}"]
 
 [tool.hatch.build.hooks.version]
 path = "{{ project_base_module }}/_version.py"
-template = '''
+template = '''# -*- coding: utf-8 -*-
 version = "{version}"
 '''
 
