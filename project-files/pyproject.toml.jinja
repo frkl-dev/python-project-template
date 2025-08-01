@@ -49,6 +49,12 @@ fallback-version = "0.0.0"
 [tool.hatch.build.targets.wheel]
 packages = ["src/{{ project_base_module }}"]
 
+[tool.hatch.build.hooks.version]
+path = "{{ project_base_module }}/_version.py"
+template = '''
+version = "{version}"
+'''
+
 [tool.ruff]
 line-length = 88
 
