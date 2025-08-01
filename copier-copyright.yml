@@ -1,0 +1,22 @@
+copyright_holder:
+  type: str
+  help: "The name of the copyright holder"
+  default: "{{ full_name }}"
+  when: false
+
+copyright_date:
+  type: str
+  help: "The date of the copyright"
+  default: "{{ current_year }}"
+  when: false
+
+project_license:
+  type: str
+  help: Your project's license
+  choices: "{% license_list %}"
+
+project_license_text:
+  type: str
+  help: The license text for the project
+  default: "{% license_text project_license %}"
+  when: false

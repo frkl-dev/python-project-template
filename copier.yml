@@ -16,6 +16,12 @@ _exclude:
   - ".svn"
   - "template_docs"
   - "{% if _copier_operation == 'update' -%}TODO.md{% endif %}"
+_jinja_extensions:
+    - copier_templates_extensions.TemplateExtensionLoader
+    - misc/jinja_extensions.py:CurrentYearExtension
+    - misc/jinja_extensions.py:RenderStringFilter
+    - license/jinja_license_extensions.py:LicenseListExtension
+    - license/jinja_license_extensions.py:LicenseTextExtension
 
 ---
 !include copier-messages.yml
@@ -27,13 +33,15 @@ _exclude:
 
 full_name:
   type: str
-  help: "Your full name."
+  help: "Your full name"
+  default: "Markus Binsteiner"
   validator: >-
     {% if not full_name %}No name provided{% endif %}
 
 email:
   type: str
-  help: "Your email address."
+  default: "markus@frkl.dev"
+  help: "Your email address"
   validator: >-
     {% if not email %}
     Email is required
@@ -44,7 +52,7 @@ email:
 
 project_name:
   type: str
-  help: "The name of the project."
+  help: "The name of the project"
 
 project_slug:
   type: str
@@ -52,25 +60,35 @@ project_slug:
   default: "{{ project_name|lower|replace(' ', '_')|replace('-', '_')|replace('.', '_') }}"
   when: false
 
+project_base_module:
+  type: str
+  help: "The base module for the project"
+  default: "{{ project_slug }}"
+  when: false
+
+project_base_path:
+  type: str
+  help: "The base path for the project"
+  default: "{{ project_slug }}"
+  when: false
+
 project_short_description:
   type: str
-  help: "A short description of the plugin."
+  help: "A short description of the plugin"
   validator: >-
     {% if not project_short_description %}
     Please provide a short description for your plugin
     {% endif %}
 
 ---
-!include copier-license.yml
+!include copier-copyright.yml
 ---
 
 github_user:
   type: str
-  help: "Your github username or organization."
+  help: "Your github username or organization"
 
 anaconda_user:
   type: str
   help: "Your anaconda username or organization (optional)."
-
-
 

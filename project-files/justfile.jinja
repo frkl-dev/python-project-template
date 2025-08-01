@@ -1,0 +1,18 @@
+default:
+    @just --list
+
+typecheck:
+    uv run ty check --python=.venv/ --config=pyproject.toml src/{{ project_base_module }}
+
+lint:
+    just ruff check src . --fix
+
+tests:
+    uv run pytest tests -s
+
+test pattern:
+    uv run pytest tests -s -k {{pattern}}
+
+
+
+
