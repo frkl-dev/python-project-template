@@ -40,6 +40,11 @@ repos:
     hooks:
     -   id: pyupgrade
 
+- repo: https://github.com/emzeat/mz-lictools
+  rev: v2.2
+  hooks:
+    - id: license-tools
+
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: v4.6.0  # Use the ref you want to point at
   hooks:
@@ -60,8 +65,3 @@ repos:
     args: ['--fix=no']
   - id: no-commit-to-branch
     args: [--branch, main]
-
-- repo: https://github.com/fsfe/reuse-tool
-  rev: v5.0.2
-  hooks:
-    - id: reuse
