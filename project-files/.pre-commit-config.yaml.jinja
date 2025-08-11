@@ -35,6 +35,11 @@ repos:
        args: ["--python=.venv", "src/{{ project_base_module }}"]
        additional_dependencies: [ty]
 
+- repo: https://github.com/hashicorp/copywrite
+  rev: v0.15.0
+  hooks:
+    - id: copywrite-headers
+
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: v4.6.0  # Use the ref you want to point at
   hooks:
