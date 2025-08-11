@@ -6,7 +6,7 @@ copyright_holder:
 
 copyright_date:
   type: str
-  help: "The date of the copyright"
+  help: "The first year of the copyright"
   default: "{{ current_year }}"
   when: false
 
