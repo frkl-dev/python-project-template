@@ -28,14 +28,15 @@ dependencies = [
 ]
 dynamic = ["version"]
 
+
+[project.optional-dependencies]
+
 [dependency-groups]
 dev = [
     "pre-commit",
     "ruff",
     "ty"
 ]
-
-[project.optional-dependencies]
 
 [project.urls]
 homepage = "https://github.com/{{ github_user }}/{{ project_slug }}"
@@ -53,6 +54,7 @@ packages = ["src/{{ project_base_module }}"]
 [tool.hatch.build.hooks.version]
 path = "{{ project_base_module }}/_version.py"
 template = '''# -*- coding: utf-8 -*-
+
 version = "{version}"
 '''
 
