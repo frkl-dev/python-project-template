@@ -60,3 +60,8 @@ repos:
     args: ['--fix=no']
   - id: no-commit-to-branch
     args: [--branch, main]
+
+  - repo: https://github.com/fsfe/reuse-tool
+    rev: v5.0.2
+    hooks:
+      - id: reuse
