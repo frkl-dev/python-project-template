@@ -52,7 +52,7 @@ fallback-version = "0.0.0"
 packages = ["src/{{ project_base_module }}"]
 
 [tool.hatch.build.hooks.version]
-path = "{{ project_base_module }}/_version.py"
+path = "src/{{ project_base_module }}/_version.py"
 template = '''# -*- coding: utf-8 -*-
 
 version = "{version}"
