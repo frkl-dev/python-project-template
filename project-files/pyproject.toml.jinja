@@ -9,7 +9,7 @@ authors = [
     {name = "{{ full_name }}", email = "{{ email }}"}
 ]
 readme = "README.md"
-requires-python = ">=3.9,<4.0"
+requires-python = ">=3.9,<3.13"
 keywords = []
 license = {text = "{{ project_license }}"}
 classifiers = [
@@ -98,4 +98,3 @@ pip = ">=25.0"
 [tool.pixi.environments]
 default = { solve-group = "default" }
 dev = { features = ["dev"] }  # should be the same solve-group, but that doesn't seem to work with pixi currently
-

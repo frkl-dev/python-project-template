@@ -1,17 +1,16 @@
 [![PyPI status](https://img.shields.io/pypi/status/{{ project_slug }}.svg)](https://pypi.python.org/pypi/{{ project_slug }}/)
 [![PyPI version](https://img.shields.io/pypi/v/{{ project_slug }}.svg)](https://pypi.python.org/pypi/{{ project_slug }}/)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/{{ project_slug }}.svg)](https://pypi.python.org/pypi/{{ project_slug }}/)
-[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2F{{ github_user }}%2Fkiara%2Fbadge%3Fref%3Ddevelop&style=flat)](https://actions-badge.atrox.dev/{{ github_user }}/{{ project_slug }}/goto?ref=develop)
+[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2F{{ github_user }}%{{ project_slug }}%2Fbadge%3Fref%3Ddevelop&style=flat)](https://actions-badge.atrox.dev/{{ github_user }}/{{ project_slug }}/goto?ref=develop)
 [![Coverage Status](https://coveralls.io/repos/github/{{ github_user }}/{{ project_slug }}/badge.svg?branch=develop)](https://coveralls.io/github/{{ github_user }}/{{ project_slug }}?branch=develop)
 [![Code style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
-# [**kiara**](https://dharpa.org/kiara.documentation) plugin: ({{ project_name }})
+# {{ project_name }}
 
 {{ project_short_description }}
 
  - Documentation: [https://{{ github_user }}.github.io/{{ project_slug }}](https://{{ github_user }}.github.io/{{ project_slug }})
  - Code: [https://github.com/{{ github_user }}/{{ project_slug }}](https://github.com/{{ github_user }}/{{ project_slug }})
- - `kiara`: [https://docs.dharpa.org](https://docs.dharpa.org)
 
 ## Description
 
@@ -31,24 +30,6 @@ TODO
 ```
 git clone https://github.com/{{ github_user }}/{{ project_slug }}
 cd {{ project_slug }}
-```
-
-### Prepare development environment
-
-The recommended way to setup a development environment is to use [uv](https://docs.astral.sh/uv/). Check out [their install instructions](https://docs.astral.sh/uv/getting-started/installation/).
-
-Once you have `uv` installed, you can either run `kiara` using the `uv run` command:
-
-```
-uv run kiara module list
-```
-
-or, activate the virtual environment and run `kiara` directly:
-
-```
-uv sync  # to make sure the virtualenv exists (and is up to date)
-source .venv/bin/activate
-kiara module list
 ```
 
 ### Running pre-defined development-related tasks (using `just`)
