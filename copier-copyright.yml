@@ -13,7 +13,7 @@ copyright_date:
 project_licenses:
   type: str
   help: Your project's license
-  multiple: true
+  multiselect: true
   choices: "{% license_list %}"
 
 
