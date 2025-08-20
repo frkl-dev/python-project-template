@@ -1,0 +1,1 @@
+Licensed under the CNRI Python Open Source GPL Compatible License Agreement

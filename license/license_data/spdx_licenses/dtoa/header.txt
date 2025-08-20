@@ -1,0 +1,1 @@
+Licensed under the David M. Gay dtoa License

@@ -1,0 +1,1 @@
+Licensed under the Utah Raster Toolkit Run Length Encoded License

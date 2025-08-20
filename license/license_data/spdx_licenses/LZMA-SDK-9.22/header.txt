@@ -1,0 +1,1 @@
+Licensed under the LZMA SDK License (versions 9.22 and beyond)

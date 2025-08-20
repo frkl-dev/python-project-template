@@ -1,3 +1,4 @@
+import json
 from functools import lru_cache
 from pathlib import Path
 from typing import Set, Union, Dict, Any
@@ -23,12 +24,12 @@ def available_licenses() -> Set[str]:
     """Get a list of available licenses."""
 
     template_root = get_template_root()
-    licenses_dir = template_root / 'license' / 'license_data'
+    licenses_dir = template_root / 'license' / 'license_data' / 'spdx_licenses'
 
 
     licenses: Set[str] = {
         path.stem for ext in ['*.txt', '*.yml']
-        for path in licenses_dir.glob(ext)
+        for path in licenses_dir.glob(ext) if path.is_dir()
     }
     return licenses
 
@@ -37,12 +38,12 @@ def license_data(license_id: str) -> Dict[str, Any] | None:
     """Get the license text for a license identifier."""
 
     template_root = get_template_root()
-    licenses_dir = template_root / 'license' / 'license_data'
+    licenses_dir = template_root / 'license' / 'license_data' / 'spdx_licenses'
 
-    license_file = licenses_dir / f'{license_id}.yml'
+    license_file = licenses_dir / license_id / 'details.json'
     if license_file.exists():
         text = license_file.read_text()
-        data = yaml.safe_load(text)
+        data = json.loads(text)
         if not isinstance(data, dict):
             raise ValueError(f"Invalid license data for {license_id}: not a dictionary")
         return data
@@ -53,10 +54,10 @@ def license_data(license_id: str) -> Dict[str, Any] | None:
 def license_text(license_id: str) -> str | None:
     """Get the license text for a license identifier."""
 
-    THIS_DIR = Path(__file__).parent
-    LICENSES_DIR = THIS_DIR / 'license_data'
+    template_root = get_template_root()
+    licenses_dir = template_root / 'license' / 'license_data' / 'spdx_licenses'
 
-    license_file = LICENSES_DIR / f'{license_id}.txt'
+    license_file = licenses_dir / license_id / 'license.txt'
 
     if license_file.exists():
         text = license_file.read_text().strip()
@@ -66,7 +67,6 @@ def license_text(license_id: str) -> str | None:
             return None
     else:
         return None
-
 
 class LicenseTextExtension(Extension):
     """Jinja2 extension to map license identifiers to PyPI classifiers."""
