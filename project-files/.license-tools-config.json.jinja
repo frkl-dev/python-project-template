@@ -2,7 +2,8 @@
   "author": {
     "from_git": true
   },
-  "license": "{{ project_license }}",
+  "license": "{{ project_licenses | join(' OR ') }}",
+  "custom_license": {{ ("{% license_header project_licenses %}") | tojson }},
   "include": [
     "src/**/*.py"
   ]

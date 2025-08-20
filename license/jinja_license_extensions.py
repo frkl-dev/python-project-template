@@ -1,7 +1,7 @@
 import json
 from functools import lru_cache
 from pathlib import Path
-from typing import Set, Union, Dict, Any
+from typing import Set, Union, Dict, Any, List
 
 import yaml
 from jinja2 import nodes
@@ -68,6 +68,29 @@ def license_text(license_id: str) -> str | None:
     else:
         return None
 
+def license_header(license_ids: List[str]) -> str | None:
+    """Get the license header for one or multiple license identifiers."""
+
+    template_root = get_template_root()
+    licenses_dir = template_root / 'license' / 'license_data' / 'spdx_licenses'
+
+    all_headers = []
+    for license_id in license_ids:
+        license_file = licenses_dir / license_id / 'header.txt'
+
+        if license_file.exists():
+            text = license_file.read_text().strip()
+            if text:
+                all_headers.append(text)
+            else:
+                raise Exception(f"License header for license not found: {license_id}")
+
+        else:
+            raise Exception(f"License id not found: {license_id}")
+
+    return '\n'.join(all_headers)
+
+
 class LicenseTextExtension(Extension):
     """Jinja2 extension to map license identifiers to PyPI classifiers."""
 
@@ -98,3 +121,20 @@ class LicenseListExtension(Extension):
         """Lookup PyPI classifier for a license identifier."""
 
         return sorted(available_licenses())
+
+
+class LicenseHeaderExtension(Extension):
+    """Jinja2 extension to map license identifiers to PyPI classifiers."""
+
+    tags = {'license_header'}
+
+    def parse(self, parser):
+        lineno = next(parser.stream).lineno
+        license_ids = parser.parse_expression()
+        args = [license_ids]
+        return nodes.Output([self.call_method('_lookup_header', args)]).set_lineno(lineno)
+
+    def _lookup_header(self, license_ids) -> str:
+        """Lookup license text for a license identifier."""
+
+        return license_header(license_ids)

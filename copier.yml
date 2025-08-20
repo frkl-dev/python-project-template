@@ -22,6 +22,7 @@ _jinja_extensions:
     - misc/jinja_extensions.py:RenderStringFilter
     - license/jinja_license_extensions.py:LicenseListExtension
     - license/jinja_license_extensions.py:LicenseTextExtension
+    - license/jinja_license_extensions.py:LicenseHeaderExtension
 
 ---
 !include copier-messages.yml
