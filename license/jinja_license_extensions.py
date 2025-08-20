@@ -74,21 +74,33 @@ def license_header(license_ids: List[str]) -> str | None:
     template_root = get_template_root()
     licenses_dir = template_root / 'license' / 'license_data' / 'spdx_licenses'
 
-    all_headers = []
+    all_headers = {}
     for license_id in license_ids:
         license_file = licenses_dir / license_id / 'header.txt'
 
         if license_file.exists():
             text = license_file.read_text().strip()
             if text:
-                all_headers.append(text)
+                all_headers[license_id] = text
             else:
                 raise Exception(f"License header for license not found: {license_id}")
 
         else:
             raise Exception(f"License id not found: {license_id}")
 
-    result = '\n ---------------- \n'.join(all_headers)
+    spdx_expr = license_ids.join(' OR ')
+
+    spdx_header = f"SPDX-License-Identifier: {spdx_expr}"
+
+    if len(license_ids) == 1:
+        msg = all_headers[license_ids[0]]
+    else:
+        msg = "This file is licensed under multiple licenses:\n\n"
+
+        for license_id, header in all_headers.items():
+            msg += f"- {license_id}:\n{header}\n\n"
+
+    result = f"{spdx_header}\n\n{msg}".strip()
     return json.dumps(result)[1:-1]
 
 
