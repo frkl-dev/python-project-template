@@ -88,7 +88,7 @@ def license_header(license_ids: List[str]) -> str | None:
         else:
             raise Exception(f"License id not found: {license_id}")
 
-    result = '\n'.join(all_headers)
+    result = '\n ---------------- \n'.join(all_headers)
     return json.dumps(result)[1:-1]
 
 
