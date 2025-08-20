@@ -28,10 +28,9 @@ def available_licenses() -> Set[str]:
     licenses_dir = template_root / 'license' / 'license_data' / 'spdx_licenses'
 
     licenses: Set[str] = {
-        path.stem
+        path.name
         for path in licenses_dir.iterdir() if path.is_dir()
     }
-    print(licenses)
     return licenses
 
 @lru_cache(maxsize=None)
