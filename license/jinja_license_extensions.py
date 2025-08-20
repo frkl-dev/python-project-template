@@ -88,7 +88,7 @@ def license_header(license_ids: List[str]) -> str | None:
         else:
             raise Exception(f"License id not found: {license_id}")
 
-    spdx_expr = license_ids.join(' OR ')
+    spdx_expr = ' OR '.join(license_ids)
 
     spdx_header = f"SPDX-License-Identifier: {spdx_expr}"
 
