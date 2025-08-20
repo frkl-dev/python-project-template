@@ -52,4 +52,11 @@ Alternatively, if you don't have the `just` command available, you can use `uv` 
 
 ## Copyright & license
 
-This project is published under the {{ project_license }} license, for the license text please check the [LICENSE](/LICENSE) file in this repository.
+{% if project_licenses | length == 1 %}
+This project is published under the {{ project_licenses[0] }} license, for the license text please check the [LICENSE](/LICENSE) file in this repository.
+{% else %}
+This project is published under the following licenses, for the license texts please check the [LICENSE](/LICENSE) file in this repository:
+{% for license in project_licenses %}
+- {{ license }}
+{% endfor %}
+{% endif %}

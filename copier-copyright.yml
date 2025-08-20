@@ -10,15 +10,10 @@ copyright_date:
   default: "{{ current_year }}"
   when: false
 
-project_license:
+project_licenses:
   type: str
   help: Your project's license
   multiple: true
   choices: "{% license_list %}"
 
 
-project_license_text:
-  type: str
-  help: The license text for the project
-  default: "{% license_text project_license %}"
-  when: false

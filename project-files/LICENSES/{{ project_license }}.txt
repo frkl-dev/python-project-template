@@ -1,1 +1,0 @@
-{{ project_license_text | render_template }}

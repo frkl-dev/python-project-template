@@ -53,6 +53,10 @@ email:
 project_name:
   type: str
   help: "The name of the project"
+  validator: >-
+    {% if not project_name %}
+    Please provide a name for your project
+    {% endif %}
 
 project_slug:
   type: str
