@@ -24,12 +24,12 @@ def available_licenses() -> Set[str]:
     """Get a list of available licenses."""
 
     template_root = get_template_root()
+    print(template_root)
     licenses_dir = template_root / 'license' / 'license_data' / 'spdx_licenses'
 
-
     licenses: Set[str] = {
-        path.stem for ext in ['*.txt', '*.yml']
-        for path in licenses_dir.glob(ext) if path.is_dir()
+        path.stem
+        for path in licenses_dir.iterdir() if path.is_dir()
     }
     print(licenses)
     return licenses
