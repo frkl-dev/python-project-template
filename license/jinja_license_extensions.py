@@ -31,6 +31,7 @@ def available_licenses() -> Set[str]:
         path.stem for ext in ['*.txt', '*.yml']
         for path in licenses_dir.glob(ext) if path.is_dir()
     }
+    print(licenses)
     return licenses
 
 @lru_cache(maxsize=None)

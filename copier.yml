@@ -56,7 +56,7 @@ project_name:
 
 project_slug:
   type: str
-  help: "The project slug for the plugin."
+  help: "The project slug."
   default: "{{ project_name|lower|replace(' ', '_')|replace('-', '_')|replace('.', '_') }}"
   when: false
 
@@ -74,10 +74,10 @@ project_base_path:
 
 project_short_description:
   type: str
-  help: "A short description of the plugin"
+  help: "A short description of the project"
   validator: >-
     {% if not project_short_description %}
-    Please provide a short description for your plugin
+    Please provide a short description for your project
     {% endif %}
 
 ---
