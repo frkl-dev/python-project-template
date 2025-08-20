@@ -7,6 +7,29 @@ import yaml
 from jinja2 import nodes
 from jinja2.ext import Extension
 
+DEFAULT_LICENSES = [
+  "MIT",
+  "Apache-2.0",
+  "GPL-2.0-only",
+  "GPL-3.0-only",
+  "LGPL-2.1-only",
+  "BSD-3-Clause",
+  "BSD-2-Clause",
+  "GPL-2.0-or-later",
+  "LGPL-3.0-only",
+  "BSD-0-Clause",
+  "ISC",
+  "CC0-1.0",
+  "Unlicense",
+  "GPL-3.0-or-later",
+  "MPL-2.0",
+  "LGPL-2.0-only",
+  "AGPL-3.0-only",
+  "Artistic-2.0",
+  "EPL-2.0",
+  "0BSD"
+]
+
 def get_template_root():
     """Get the template root directory."""
     # This will find the template root by looking for copier.yml
@@ -20,16 +43,15 @@ def get_template_root():
     return Path(__file__).parent
 
 @lru_cache(maxsize=None)
-def available_licenses() -> Set[str]:
+def available_licenses(display_all: bool=False) -> Set[str]:
     """Get a list of available licenses."""
 
     template_root = get_template_root()
-    print(template_root)
     licenses_dir = template_root / 'license' / 'license_data' / 'spdx_licenses'
 
     licenses: Set[str] = {
         path.name
-        for path in licenses_dir.iterdir() if path.is_dir()
+        for path in licenses_dir.iterdir() if path.is_dir() and (display_all or path.name in DEFAULT_LICENSES)
     }
     return licenses
 
@@ -127,13 +149,22 @@ class LicenseListExtension(Extension):
 
     def parse(self, parser):
         lineno = next(parser.stream).lineno
-        args = []
+
+        # Check if there are any arguments
+        if parser.stream.current.test("block_end"):
+            # No arguments provided, use default
+            display_all = nodes.Const(False)
+        else:
+            # Parse the display_all argument
+            display_all = parser.parse_expression()
+
+        args = [display_all]
         return nodes.Output([self.call_method('_lookup_license_list', args)]).set_lineno(lineno)
 
-    def _lookup_license_list(self):
+    def _lookup_license_list(self, display_all: bool=False):
         """Lookup PyPI classifier for a license identifier."""
 
-        return sorted(available_licenses())
+        return sorted(available_licenses(display_all=display_all))
 
 
 class LicenseHeaderExtension(Extension):

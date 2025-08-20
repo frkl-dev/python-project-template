@@ -10,10 +10,16 @@ copyright_date:
   default: "{{ current_year }}"
   when: false
 
+all_spdx_licenses:
+  type: bool
+  help: "Display all licenses"
+  default: false
+  when: false
+
 project_licenses:
   type: str
   help: Your project's license
   multiselect: true
-  choices: "{% license_list %}"
+  choices: "{% license_list all_spdx_licenses %}"
 
 
