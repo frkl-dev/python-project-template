@@ -165,7 +165,7 @@ class LicenseListExtension(Extension):
         """Lookup PyPI classifier for a license identifier."""
 
         display_all = True
-
+        print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
         return sorted(available_licenses(display_all=display_all))
 
 
