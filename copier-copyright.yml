@@ -13,7 +13,7 @@ copyright_date:
 all_spdx_licenses:
   type: bool
   help: "Display all licenses"
-  default: false
+  default: true
   when: false
 
 project_licenses:
