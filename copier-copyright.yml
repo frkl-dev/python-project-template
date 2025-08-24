@@ -13,7 +13,7 @@ copyright_date:
 all_spdx_licenses:
   type: bool
   help: "Display all licenses"
-  default: true
+  default: "{% if _copier_operation == 'copy' %}false{% else %}true{% endif %}"
   when: false
 
 project_licenses:

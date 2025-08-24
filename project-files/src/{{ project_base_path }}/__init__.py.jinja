@@ -1,4 +1,4 @@
-from typing import IO, Any, Union
+from typing import IO, Any
 import builtins
 
 """Top-level package for the {{ project_name }} project."""
@@ -16,7 +16,7 @@ try:
         *objects: Any,
         sep: str = " ",
         end: str = "\n",
-        file: Union[IO[str], None] = None,
+        file: IO[str] | None = None,
         flush: bool = False,
     ) -> None:
         for obj in objects:
@@ -39,15 +39,10 @@ try:
         *objects: Any,
         sep: str = " ",
         end: str = "\n",
-        file: Union[IO[str], None] = None,
+        file: IO[str] | None = None,
         flush: bool = False,
     ) -> None:
 
-        # objs = (
-        #     ["[green]----------------------------------------------[/green]"]
-        #     + list(objects)
-        #     + ["[green]----------------------------------------------[/green]"]
-        # )
         return debug(*objects)  # type: ignore
 
     setattr(builtins, "DBG", DBG)
@@ -75,4 +70,3 @@ try:
     snoop.install()
 except ImportError:  # Graceful fallback if Snoop isn't installed.
     pass
-
