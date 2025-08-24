@@ -6,12 +6,12 @@ to remind developers to implement proper tests.
 
 import pytest
 
-from {{ project_base_module }} import __version__
+from {{ project_base_module }}._version import version
 
 
 def test_version_exists():
     """Test that the package has a version attribute."""
-    assert hasattr(__version__, '__version__') or isinstance(__version__, str)
+    assert isinstance(version, str)
 
 
 def test_todo_implement_tests():
