@@ -1,0 +1,31 @@
+name: "darwin tests for '{{ project_slug }}'"
+# This workflow is triggered on pushes to the repository.
+on: [push]
+env:
+  DEVELOPER_DIR: /Applications/Xcode_15.4.app/Contents/Developer
+  MACOSX_DEPLOYMENT_TARGET: 10.15
+
+jobs:
+  test-darwin:
+    name: pytest on darwin
+    runs-on: macos-14
+    strategy:
+      matrix:
+        python_version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - name: install Python
+        run: uv python install {% raw %}${{ matrix.python_version }}{% endraw %}
+      - name: create lockfile
+        if: hashFiles('uv.lock') == ''
+        run: uv lock --python {% raw %}${{ matrix.python_version }}{% endraw %}
+      - name: install the project
+        run: uv sync --locked --dev --python {% raw %}${{ matrix.python_version }}{% endraw %}
+      - name: Test with pytest
+        run: make test
