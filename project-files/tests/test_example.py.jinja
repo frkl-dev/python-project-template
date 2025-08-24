@@ -1,0 +1,29 @@
+"""Example test module for {{ project_name }}.
+
+This module contains a placeholder test that intentionally fails
+to remind developers to implement proper tests.
+"""
+
+import pytest
+
+from {{ project_base_module }} import __version__
+
+
+def test_version_exists():
+    """Test that the package has a version attribute."""
+    assert hasattr(__version__, '__version__') or isinstance(__version__, str)
+
+
+def test_todo_implement_tests():
+    """Placeholder test that fails to remind developers to implement tests."""
+    assert False, (
+        "TODO: Implement proper tests for {{ project_name }}!\n"
+        "This is a placeholder test that intentionally fails.\n"
+        "Replace this with actual tests for your functionality."
+    )
+
+
+def test_sample_fixture(sample_fixture):
+    """Example test using a fixture from conftest.py."""
+    assert sample_fixture["key"] == "value"
+    assert sample_fixture["project"] == "{{ project_name }}"
