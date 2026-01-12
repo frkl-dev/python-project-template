@@ -4,68 +4,55 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This is a Copier template for Python projects that sets up a complete Python development environment with modern tooling.
+This is a Copier template for Python projects. It generates complete Python development environments with uv, hatch, pre-commit, and CI/CD workflows.
+
+## Template Development Commands
+
+```bash
+just download-license <license_ids>  # Download SPDX license data (e.g., MIT, Apache-2.0)
+```
+
+To test template generation:
+```bash
+copier copy . /path/to/new-project
+```
+
+## Generated Project Commands
+
+Projects created from this template use:
+```bash
+just typecheck        # ty check on src/
+just lint             # ruff check with auto-fix
+just format           # ruff format
+just tests            # pytest tests -s
+just test <pattern>   # pytest -k <pattern>
+```
 
 ## Architecture
 
-The repository structure follows a template-based approach:
-- `project-files/`: Contains Jinja2 templates that will be copied to new projects
-- `license/`: License management system with SPDX license data and custom extensions
-- `misc/`: Custom Jinja extensions for template processing
-- Configuration files (`copier.yml`, `copier-*.yml`): Define template variables and tasks
+**Template processing flow:**
+1. `copier.yml` → Main config, includes `copier-tasks.yml`, `copier-copyright.yml`, `copier-messages.yml`
+2. `project-files/` → Jinja2 templates (`.jinja` suffix) copied to target
+3. Custom Jinja extensions provide template helpers
 
-## Key Development Commands
+**Custom Jinja extensions:**
+- `misc/jinja_extensions.py`: `current_year` global, `render_template` filter
+- `license/jinja_license_extensions.py`: `{% license_text %}`, `{% license_list %}`, `{% license_header %}` tags for SPDX license handling
 
-When working on generated projects (not the template itself), use these commands:
+**License system:**
+- `license/license_data/spdx_licenses/` contains downloaded license data (details.json, license.txt, header.txt per license)
+- `DEFAULT_LICENSES` in `jinja_license_extensions.py` controls which licenses appear in selection
 
-### Type Checking
-```bash
-just typecheck  # Runs ty check on the source code
-```
-
-### Linting & Formatting
-```bash
-just lint    # Run ruff linter with auto-fix
-just format  # Format code with ruff
-```
-
-### Testing
-```bash
-just tests           # Run all tests
-just test <pattern>  # Run tests matching a pattern
-```
-
-### Template-specific Commands
-```bash
-just download-license <license_ids>  # Download specific SPDX licenses
-```
+**Post-copy tasks** (`copier-tasks.yml`):
+- Initializes git with `develop` branch
+- Installs pre-commit hooks (including commit-msg for commitlint)
+- Runs pre-commit on all files
+- Creates initial commit
 
 ## Build System
 
 Generated projects use:
-- **uv**: For Python dependency management and environment handling
-- **hatch**: For building and publishing packages
-- **hatchling**: Build backend with dynamic versioning from git tags
-- **pre-commit**: Automated code quality checks on commit
-- **commitlint**: Enforces conventional commit messages
-
-## Template Variables
-
-Key template variables defined in `copier.yml`:
-- `project_name`: Human-readable project name
-- `project_slug`: Python-safe package name
-- `project_base_module`: Base module name (defaults to project_slug)
-- `full_name`, `email`: Author information
-- `github_user`: GitHub username/organization
-- `anaconda_user`: Anaconda username (optional)
-- `project_licenses`: List of SPDX license identifiers
-
-## Generated Project Structure
-
-Projects created from this template will have:
-- `src/{{project_base_module}}/`: Source code directory
-- `tests/`: Test directory
-- `pyproject.toml`: Project metadata and dependencies
-- `justfile`: Task runner commands
-- `commitlint.config.js`: Commit message linting
-- Git initialized with develop branch and pre-commit hooks
+- **uv**: Dependency management
+- **hatchling** + **uv-dynamic-versioning**: Build backend with git tag versioning
+- **pre-commit**: ruff, ty, commitlint, license-tools, pyupgrade
+- Commits to `main` branch are blocked by pre-commit
