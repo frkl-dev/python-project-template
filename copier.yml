@@ -71,7 +71,7 @@ project_base_module:
 project_base_path:
   type: str
   help: "The base path for the project"
-  default: "{{ project_slug }}"
+  default: "{{ project_name|lower|replace(' ', '_')|replace('-', '_')|replace('.', '/') }}"
   when: false
 
 project_short_description:

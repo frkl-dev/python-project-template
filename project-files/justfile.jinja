@@ -2,7 +2,7 @@ default:
     @just --list
 
 typecheck:
-    uv run ty check --python=.venv/ src/{{ project_base_module }}
+    uv run ty check --python=.venv/ src/{{ project_base_path }}
 
 lint:
     uv run ruff check src . --fix

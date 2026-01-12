@@ -56,10 +56,10 @@ fallback-version = "0.0.0"
 
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/{{ project_base_module }}"]
+packages = ["src/{{ project_base_path }}"]
 
 [tool.hatch.build.hooks.version]
-path = "src/{{ project_base_module }}/_version.py"
+path = "src/{{ project_base_path }}/_version.py"
 template = '''version = "{version}"
 '''
 
