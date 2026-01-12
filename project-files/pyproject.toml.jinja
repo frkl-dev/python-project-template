@@ -32,6 +32,7 @@ dynamic = ["version"]
 
 [dependency-groups]
 dev = [
+    "build",
     "devtools",
     "icecream",
     "pre-commit",
@@ -113,5 +114,3 @@ pip = ">=25.0"
 [tool.pixi.environments]
 default = { solve-group = "default" }
 dev = { features = ["dev"] }  # should be the same solve-group, but that doesn't seem to work with pixi currently
-
-
