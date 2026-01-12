@@ -15,3 +15,6 @@ tests:
 
 test pattern:
     uv run pytest tests -s -k {{pattern}}
+
+update-template:
+    uvx --with copier-template-extensions copier update --trust -T -A
