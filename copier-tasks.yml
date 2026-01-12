@@ -23,6 +23,5 @@ _tasks:
     when: "{{ _copier_operation == 'copy' }}"
   - command: 'git add "*" ".*" >> .init.log 2>&1'
     when: "{{ _copier_operation == 'copy' }}"
-  - command: 'git commit -m "chore: initial commit" >> .init.log 2>&1'
+  - command: 'git commit --no-verify -m "chore: initial commit" >> .init.log 2>&1'
     when: "{{ _copier_operation == 'copy' }}"
-
