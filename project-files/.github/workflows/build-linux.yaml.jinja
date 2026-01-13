@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python_version: ["3.10", "3.11", "3.12", "3.13"]
+        python_version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
     steps:
       - uses: actions/checkout@v5
         with:
@@ -88,12 +88,12 @@ jobs:
         with:
           enable-cache: true
       - name: install Python
-        run: uv python install 3.13
+        run: uv python install 3.14
       - name: create lockfile
         if: hashFiles('uv.lock') == ''
-        run: uv lock --python 3.13
+        run: uv lock --python 3.14
       - name: install the project
-        run: uv sync --locked --dev --python 3.13
+        run: uv sync --locked --dev --python 3.14
       - name: create packages
         run: uv run python -m build
       - name: upload artifacts

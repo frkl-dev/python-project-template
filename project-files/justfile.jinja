@@ -10,6 +10,9 @@ lint:
 format:
     uv run ruff format src .
 
+pre-commit:
+    uv run pre-commit run --all-files
+
 tests:
     uv run pytest tests -s
 
