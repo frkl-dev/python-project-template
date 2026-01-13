@@ -68,6 +68,12 @@ project_base_module:
   default: "{{ project_name|lower|replace(' ', '_')|replace('-', '_') }}"
   when: false
 
+project_package_base:
+  type: str
+  help: "The Python build target package."
+  default: "{{ project_base_module.split('.')[0] }}"
+  when: false
+
 project_base_path:
   type: str
   help: "The base path for the project"
