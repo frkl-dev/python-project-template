@@ -43,14 +43,14 @@ try:
         flush: bool = False,
     ) -> None:
 
-        return debug(*objects)  # type: ignore
+        return debug(*objects)
 
     setattr(builtins, "DBG", DBG)
 except ImportError:  # Graceful fallback if DevTools isn't installed.
     pass
 
 try:
-    from icecream import ic  # type: ignore
+    from icecream import ic
 
     setattr(builtins, "ic", ic)
 except ImportError:  # Graceful fallback if IceCream isn't installed.
@@ -65,7 +65,7 @@ except ImportError:  # Graceful fallback if IceCream isn't installed.
     pass
 
 try:
-    import snoop  # type: ignore
+    import snoop
 
     snoop.install()
 except ImportError:  # Graceful fallback if Snoop isn't installed.

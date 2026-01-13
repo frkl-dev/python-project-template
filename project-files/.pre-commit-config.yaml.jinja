@@ -23,7 +23,7 @@ repos:
        language: python
        entry: ty check
        pass_filenames: false
-       args: ["--python=.venv", "src/{{ project_base_module }}"]
+       args: ["--python=.venv", "src/{{ project_base_path }}"]
        additional_dependencies: [ty]
 
 - repo: https://github.com/emzeat/mz-lictools
@@ -32,7 +32,7 @@ repos:
     - id: license-tools
 
 - repo: https://github.com/asottile/pyupgrade
-  rev: v3.20.0
+  rev: v3.21.2
   hooks:
     -   id: pyupgrade
 
@@ -48,14 +48,12 @@ repos:
   rev: v4.6.0  # Use the ref you want to point at
   hooks:
   - id: trailing-whitespace
-    exclude: '(setup.cfg|src/kiara/utils/cli/__init__.py)'
   - id: check-added-large-files
   - id: check-ast
   - id: check-json
   - id: check-merge-conflict
   - id: check-xml
   - id: check-yaml
-    exclude: '(tests/\*|ci/conda/kiara/meta.yaml)'
   - id: debug-statements
   - id: end-of-file-fixer
     exclude: '(.*.json|.*.j2)'
