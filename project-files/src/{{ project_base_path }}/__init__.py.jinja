@@ -7,8 +7,8 @@ __author__ = "{{ full_name }}"
 __email__ = "{{ email }}"
 
 try:
-    from rich import inspect
-    from rich import print as rich_print
+    from rich import inspect  # ty: ignore[unresolved-import]
+    from rich import print as rich_print  # ty: ignore[unresolved-import]
 
     setattr(builtins, "insp", inspect)
 
@@ -33,7 +33,7 @@ except ImportError:  # Graceful fallback if Rich isn't installed.
     pass
 
 try:
-    from devtools import debug
+    from devtools import debug  # ty: ignore[unresolved-import]
 
     def DBG(
         *objects: Any,
@@ -50,14 +50,14 @@ except ImportError:  # Graceful fallback if DevTools isn't installed.
     pass
 
 try:
-    from icecream import ic
+    from icecream import ic  # ty: ignore[unresolved-import]
 
     setattr(builtins, "ic", ic)
 except ImportError:  # Graceful fallback if IceCream isn't installed.
     pass
 
 try:
-    from wat import wat
+    from wat import wat  # ty: ignore[unresolved-import]
 
     setattr(builtins, "wats", wat.s)
     setattr(builtins, "wat", wat)
@@ -65,7 +65,7 @@ except ImportError:  # Graceful fallback if IceCream isn't installed.
     pass
 
 try:
-    import snoop
+    import snoop  # ty: ignore[unresolved-import]
 
     snoop.install()
 except ImportError:  # Graceful fallback if Snoop isn't installed.

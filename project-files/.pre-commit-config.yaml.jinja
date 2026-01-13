@@ -16,15 +16,13 @@ repos:
       stages: [commit-msg]
       additional_dependencies: ['@commitlint/config-conventional']
 
-- repo: local
+repos:
+- repo: https://github.com/allganize/ty-pre-commit
+  # Ty version.
+  rev: v0.0.11
   hooks:
-     - id: ty-check
-       name: ty-check
-       language: python
-       entry: ty check
-       pass_filenames: false
-       args: ["--python=.venv", "src/{{ project_base_path }}"]
-       additional_dependencies: [ty]
+    # Run the type checker.
+    - id: ty-check
 
 - repo: https://github.com/emzeat/mz-lictools
   rev: v2.8.0
