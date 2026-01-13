@@ -71,7 +71,7 @@ project_base_module:
 project_package_base:
   type: str
   help: "The Python build target package."
-  default: "{{ project_base_module }}"
+  default: "{{ project_base_module.split('.')[0] }}"
   when: false
 
 project_base_path:
