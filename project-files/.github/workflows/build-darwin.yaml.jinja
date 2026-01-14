@@ -13,6 +13,9 @@ jobs:
       matrix:
         python_version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
     steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
       - uses: ./.github/actions/setup-uv-env
         with:
           python-version: {% raw %}${{ matrix.python_version }}{% endraw %}
