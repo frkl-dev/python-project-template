@@ -54,7 +54,6 @@ repository = "https://github.com/{{ github_user }}/{{ project_slug }}"
 source = "uv-dynamic-versioning"
 fallback-version = "0.0.0"
 
-
 [tool.hatch.build.targets.wheel]
 packages = ["src/{{ project_package_base }}"]
 
@@ -62,6 +61,9 @@ packages = ["src/{{ project_package_base }}"]
 path = "src/{{ project_base_path }}/_version.py"
 template = '''version = "{version}"
 '''
+
+[tool.uv-dynamic-versioning]
+pattern = "default-unprefixed"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
