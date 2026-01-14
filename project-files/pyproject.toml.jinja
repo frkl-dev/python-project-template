@@ -98,6 +98,9 @@ known-first-party = ["{{ project_base_module }}"]
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
+[tool.ty.rules]
+unused-ignore-comment = "ignore"
+
 [tool.pixi.project]
 channels = ["conda-forge"]
 platforms = ["linux-64", "win-64", "osx-64", "osx-arm64"]
