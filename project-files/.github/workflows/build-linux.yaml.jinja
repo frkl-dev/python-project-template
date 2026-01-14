@@ -178,4 +178,4 @@ jobs:
     - name: merge tag
       run: git merge "${RELEASE_VERSION}"
     - name: push updated main branch
-      run: git push https://{% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}@github.com/{{ github_user }}/{{ full_project_slug }}.git
+      run: git push https://{% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}@github.com/{{ github_user }}/{{ project_slug }}.git
