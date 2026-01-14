@@ -20,20 +20,9 @@ jobs:
       matrix:
         python_version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
     steps:
-      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-uv-env
         with:
-          fetch-depth: 0
-      - name: install uv
-        uses: astral-sh/setup-uv@v7
-        with:
-          enable-cache: true
-      - name: install Python
-        run: uv python install {% raw %}${{ matrix.python_version }}{% endraw %}
-      - name: create lockfile
-        if: hashFiles('uv.lock') == ''
-        run: uv lock --python {% raw %}${{ matrix.python_version }}{% endraw %}
-      - name: install the project
-        run: uv sync --locked --dev --python {% raw %}${{ matrix.python_version }}{% endraw %}
+          python-version: {% raw %}${{ matrix.python_version }}{% endraw %}
       - name: test with pytest
         run: uv run pytest --cov-report=xml --cov={{ project_base_module }} tests
 
@@ -44,20 +33,9 @@ jobs:
       matrix:
         python_version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
     steps:
-      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-uv-env
         with:
-          fetch-depth: 0
-      - name: install uv
-        uses: astral-sh/setup-uv@v7
-        with:
-          enable-cache: true
-      - name: install Python
-        run: uv python install {% raw %}${{ matrix.python_version }}{% endraw %}
-      - name: create lockfile
-        if: hashFiles('uv.lock') == ''
-        run: uv lock --python {% raw %}${{ matrix.python_version }}{% endraw %}
-      - name: install the project
-        run: uv sync --locked --dev --python {% raw %}${{ matrix.python_version }}{% endraw %}
+          python-version: {% raw %}${{ matrix.python_version }}{% endraw %}
       - name: run type-checker
         run: make typecheck
 
@@ -80,20 +58,7 @@ jobs:
     name: build python package
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-      - name: install uv
-        uses: astral-sh/setup-uv@v7
-        with:
-          enable-cache: true
-      - name: install Python
-        run: uv python install 3.14
-      - name: create lockfile
-        if: hashFiles('uv.lock') == ''
-        run: uv lock --python 3.14
-      - name: install the project
-        run: uv sync --locked --dev --python 3.14
+      - uses: ./.github/actions/setup-uv-env
       - name: create packages
         run: uv run python -m build
       - name: upload artifacts

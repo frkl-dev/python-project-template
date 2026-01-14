@@ -1,0 +1,27 @@
+name: 'Setup uv environment'
+description: 'Checkout, install uv, Python, and sync dependencies'
+inputs:
+  python-version:
+    description: 'Python version to install'
+    required: false
+    default: '3.14'
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
+    - name: install uv
+      uses: astral-sh/setup-uv@v7
+      with:
+        enable-cache: true
+    - name: install Python
+      shell: bash
+      run: uv python install {% raw %}${{ inputs.python-version }}{% endraw %}
+    - name: create lockfile
+      if: hashFiles('uv.lock') == ''
+      shell: bash
+      run: uv lock --python {% raw %}${{ inputs.python-version }}{% endraw %}
+    - name: install the project
+      shell: bash
+      run: uv sync --locked --dev --python {% raw %}${{ inputs.python-version }}{% endraw %}
