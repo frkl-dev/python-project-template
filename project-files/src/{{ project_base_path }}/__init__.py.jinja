@@ -8,7 +8,9 @@ __email__ = "{{ email }}"
 
 try:
     from rich import inspect  # ty: ignore[unresolved-import]
-    from rich import print as rich_print  # ty: ignore[unresolved-import,unused-ignore-comment]
+    from rich import (  # ty: ignore[unresolved-import,unused-ignore-comment]
+        print as rich_print,
+    )
 
     setattr(builtins, "insp", inspect)
 
