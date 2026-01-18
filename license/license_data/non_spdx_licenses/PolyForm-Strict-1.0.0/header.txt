@@ -1,0 +1,3 @@
+Licensed under the PolyForm Strict License 1.0.0 (the "License");
+
+Check the LICENSES directory for details, or visit: https://polyformproject.org/licenses/strict/1.0.0/

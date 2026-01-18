@@ -23,6 +23,7 @@ _jinja_extensions:
   - license/jinja_license_extensions.py:LicenseListExtension
   - license/jinja_license_extensions.py:LicenseTextExtension
   - license/jinja_license_extensions.py:LicenseHeaderExtension
+  - license/jinja_license_extensions.py:LicenseTypeExtension
 
 ---
 !include copier-messages.yml

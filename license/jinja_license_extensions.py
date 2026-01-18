@@ -45,29 +45,65 @@ def get_template_root():
     return Path(__file__).parent
 
 
+def get_license_dir(license_id: str) -> Path | None:
+    """Find license directory in either spdx_licenses or non_spdx_licenses."""
+    root = get_template_root()
+    for subdir in ["spdx_licenses", "non_spdx_licenses"]:
+        license_dir = root / "license/license_data" / subdir / license_id
+        if license_dir.is_dir():
+            return license_dir
+    return None
+
+
+def is_spdx_license(license_id: str) -> bool:
+    """Check if license exists in spdx_licenses directory."""
+    root = get_template_root()
+    return (root / "license/license_data/spdx_licenses" / license_id).is_dir()
+
+
+def all_licenses_are_spdx(license_ids: List[str]) -> bool:
+    """Check if ALL licenses are SPDX-registered."""
+    return all(is_spdx_license(lid) for lid in license_ids)
+
+
 @lru_cache(maxsize=None)
 def available_licenses(display_all: bool = False) -> Set[str]:
-    """Get a list of available licenses."""
+    """Get a list of available licenses from both SPDX and non-SPDX directories."""
 
     template_root = get_template_root()
-    licenses_dir = template_root / "license" / "license_data" / "spdx_licenses"
+    license_data_dir = template_root / "license" / "license_data"
 
-    licenses: Set[str] = {
-        path.name
-        for path in licenses_dir.iterdir()
-        if path.is_dir() and (display_all or path.name in DEFAULT_LICENSES)
-    }
+    licenses: Set[str] = set()
+
+    # Scan SPDX licenses (filtered by DEFAULT_LICENSES unless display_all)
+    spdx_dir = license_data_dir / "spdx_licenses"
+    if spdx_dir.is_dir():
+        for path in spdx_dir.iterdir():
+            if path.is_dir() and (display_all or path.name in DEFAULT_LICENSES):
+                licenses.add(path.name)
+
+    # Scan non-SPDX licenses (always included - manually added licenses are intentional)
+    non_spdx_dir = license_data_dir / "non_spdx_licenses"
+    if non_spdx_dir.is_dir():
+        for path in non_spdx_dir.iterdir():
+            if path.is_dir() and not path.name.startswith("."):
+                licenses.add(path.name)
+
     return licenses
 
 
 @lru_cache(maxsize=None)
 def license_data(license_id: str) -> Dict[str, Any] | None:
-    """Get the license text for a license identifier."""
+    """Get the license metadata for a license identifier.
 
-    template_root = get_template_root()
-    licenses_dir = template_root / "license" / "license_data" / "spdx_licenses"
+    Returns details.json content for SPDX licenses, or None for non-SPDX licenses
+    (which don't have SPDX metadata).
+    """
+    license_dir = get_license_dir(license_id)
+    if license_dir is None:
+        return None
 
-    license_file = licenses_dir / license_id / "details.json"
+    license_file = license_dir / "details.json"
     if license_file.exists():
         text = license_file.read_text()
         data = json.loads(text)
@@ -75,51 +111,42 @@ def license_data(license_id: str) -> Dict[str, Any] | None:
             raise ValueError(f"Invalid license data for {license_id}: not a dictionary")
         return data
     else:
+        # Non-SPDX licenses may not have details.json
         return None
 
 
 @lru_cache(maxsize=None)
 def license_text(license_id: str) -> str | None:
     """Get the license text for a license identifier."""
+    license_dir = get_license_dir(license_id)
+    if license_dir is None:
+        return None
 
-    template_root = get_template_root()
-    licenses_dir = template_root / "license" / "license_data" / "spdx_licenses"
-
-    license_file = licenses_dir / license_id / "license.txt"
-
+    license_file = license_dir / "license.txt"
     if license_file.exists():
         text = license_file.read_text().strip()
         if text:
             return text
-        else:
-            return None
-    else:
-        return None
+    return None
 
 
 def license_header(license_ids: List[str]) -> str | None:
     """Get the license header for one or multiple license identifiers."""
-
-    template_root = get_template_root()
-    licenses_dir = template_root / "license" / "license_data" / "spdx_licenses"
-
     all_headers = {}
     for license_id in license_ids:
-        license_file = licenses_dir / license_id / "header.txt"
+        license_dir = get_license_dir(license_id)
+        if license_dir is None:
+            raise Exception(f"License id not found: {license_id}")
 
+        license_file = license_dir / "header.txt"
         if license_file.exists():
             text = license_file.read_text().strip()
             if text:
                 all_headers[license_id] = text
             else:
                 raise Exception(f"License header for license not found: {license_id}")
-
         else:
-            raise Exception(f"License id not found: {license_id}")
-
-    spdx_expr = " OR ".join(license_ids)
-
-    spdx_header = f"SPDX-License-Identifier: {spdx_expr}"
+            raise Exception(f"License header file not found: {license_id}")
 
     if len(license_ids) == 1:
         msg = all_headers[license_ids[0]]
@@ -129,7 +156,13 @@ def license_header(license_ids: List[str]) -> str | None:
         for license_id, header in all_headers.items():
             msg += f"- {license_id}:\n{header}\n\n"
 
-    result = f"{spdx_header}\n\n{msg}".strip()
+    # Only include SPDX identifier if ALL licenses are SPDX-registered
+    if all_licenses_are_spdx(license_ids):
+        spdx_expr = " OR ".join(license_ids)
+        result = f"SPDX-License-Identifier: {spdx_expr}\n\n{msg}".strip()
+    else:
+        result = msg.strip()
+
     return json.dumps(result)[1:-1]
 
 
@@ -195,3 +228,11 @@ class LicenseHeaderExtension(Extension):
         """Lookup license text for a license identifier."""
 
         return license_header(license_ids)
+
+
+class LicenseTypeExtension(Extension):
+    """Jinja2 extension to expose license type checking functions as globals."""
+
+    def __init__(self, environment):
+        super().__init__(environment)
+        environment.globals["all_licenses_are_spdx"] = all_licenses_are_spdx

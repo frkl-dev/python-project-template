@@ -49,6 +49,14 @@ just test <pattern>   # pytest -k <pattern>
 - Runs pre-commit on all files
 - Creates initial commit
 
+## Development
+
+For development, you can create a test project with a specific license using the following command:
+```bash
+just create-test-project-with-license <license_ids_comma_separated>
+```
+Replace `<license_ids_comma_separated>` with the desired license IDs separated by commas. The resulting project will live under `/tmp/test_project`.
+
 ## Build System
 
 Generated projects use:
