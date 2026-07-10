@@ -23,7 +23,7 @@ This project uses `uv` for dependency management and `just` as a task runner.
 ### Using uv directly
 - `uv run pytest tests -s` - Run all tests
 - `uv run pytest tests -s -k <pattern>` - Run tests matching pattern
-- `uv run ty check --python=.venv/ src/carbonsheet/auction_prices` - Type check
+- `uv run ty check --python=.venv/ src/{{ project_base_path }}` - Type check
 - `uv run ruff check src . --fix` - Lint with auto-fix
 - `uv run ruff format src .` - Format code
 
@@ -33,7 +33,7 @@ This package is created from a template project. In case you need to modify some
 things in here.
 
 ### Package Structure
-- Source code: `src/carbonsheet/auction_prices/` (namespace package)
+- Source code: `src/{{ project_base_path }}/` (namespace package)
 - Tests: `tests/`
 
 ### Code Style
