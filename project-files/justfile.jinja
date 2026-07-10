@@ -2,13 +2,13 @@ default:
     @just --list
 
 typecheck:
-    uv run ty check src/{{ project_base_path }}
+    uv run ty check
 
 lint:
-    uv run ruff check src . --fix
+    uv run ruff check . --fix
 
 format:
-    uv run ruff format src .
+    uv run ruff format .
 
 pre-commit:
     uv run pre-commit run --all-files
