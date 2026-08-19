@@ -40,6 +40,7 @@ dev = [
     "devtools",
     "icecream",
     "pre-commit",
+    "pyrefly",
     "pytest",
     "pytest-cov",
     "rich",
@@ -101,7 +102,8 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 [tool.ruff.lint.per-file-ignores]
 # The debug helpers in this file attach names to `builtins` on purpose:
 #   B010   ruff prefers `builtins.x = y`, but `ty` then reports `unresolved-attribute`,
-#          so `setattr` is the only spelling both tools accept.
+#          so `setattr` is the only spelling both tools accept. pyrefly accepts either
+#          form, but ty still runs via `just typecheck-ty` -- keep `setattr`.
 #   BLE001 the rich fallback has to catch whatever formatting an arbitrary object raises.
 "src/{{ project_base_path }}/__init__.py" = ["B010", "BLE001"]
 
@@ -110,6 +112,13 @@ known-first-party = ["{{ project_base_module }}"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
+
+[tool.pyrefly]
+# The default type checker (`just typecheck`). `project-includes` mirrors ruff's `src`
+# setting above, and its presence silences pyrefly's "run `pyrefly init`" notice.
+# `python-version` is deliberately unset so each leg of the CI matrix checks the Python
+# it actually runs on.
+project-includes = ["src", "tests"]
 
 [tool.ty.rules]
 unused-ignore-comment = "ignore"

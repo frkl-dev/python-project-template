@@ -16,13 +16,21 @@ repos:
       stages: [commit-msg]
       additional_dependencies: ['@commitlint/config-conventional']
 
-- repo: https://github.com/allganize/ty-pre-commit
-  # Ty version.
-  rev: v0.0.11
+# Run the type checker. This is a local hook rather than facebook/pyrefly-pre-commit
+# because neither upstream option works for a template: the managed env would need every
+# project dependency listed in `additional_dependencies`, and `language: system` cannot
+# find `pyrefly` when git runs the hook outside an activated venv. Going through `uv run`
+# uses the project's own venv, so the hook, the CLI and CI all share one pyrefly version
+# (the `pyrefly` dev dependency).
+- repo: local
   hooks:
-    # Run the type checker.
-    - id: ty-check
-      args: [ --venv=./.venv ]
+    - id: pyrefly-check
+      name: pyrefly check
+      entry: uv run pyrefly check
+      language: system
+      types_or: [python, pyi]
+      pass_filenames: false
+      require_serial: true
 
 - repo: https://github.com/emzeat/mz-lictools
   rev: v2.9.0

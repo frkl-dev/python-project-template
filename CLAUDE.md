@@ -23,7 +23,7 @@ generated project unbuildable (versions come from git tags).
 
 Projects created from this template use:
 ```bash
-just typecheck        # ty check on src/
+just typecheck        # pyrefly check (just typecheck-ty for ty)
 just lint             # ruff check with auto-fix
 just format           # ruff format
 just tests            # pytest tests -s
@@ -64,5 +64,5 @@ Replace `<license_ids_comma_separated>` with the desired license IDs separated b
 Generated projects use:
 - **uv**: Dependency management
 - **hatchling** + **uv-dynamic-versioning**: Build backend with git tag versioning
-- **pre-commit**: ruff, ty, commitlint, license-tools, pyupgrade
+- **pre-commit**: ruff, pyrefly, commitlint, license-tools, pyupgrade
 - Commits to `main` branch are blocked by pre-commit

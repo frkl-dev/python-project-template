@@ -16,14 +16,16 @@ This project uses `uv` for dependency management and `just` as a task runner.
 ### Using just (preferred)
 - `just tests` - Run all unit tests
 - `just test <pattern>` - Run tests matching a pattern (e.g., `just test test_example`)
-- `just typecheck` - Run type checker (ty)
+- `just typecheck` - Run type checker (pyrefly)
+- `just typecheck-ty` - Run the alternative type checker (ty)
 - `just lint` - Run ruff linter with auto-fix
 - `just format` - Run ruff formatter
 
 ### Using uv directly
 - `uv run pytest tests -s` - Run all tests
 - `uv run pytest tests -s -k <pattern>` - Run tests matching pattern
-- `uv run ty check --python=.venv/ src/{{ project_base_path }}` - Type check
+- `uv run pyrefly check` - Type check
+- `uv run ty check` - Type check with ty instead
 - `uv run ruff check src . --fix` - Lint with auto-fix
 - `uv run ruff format src .` - Format code
 
@@ -39,7 +41,7 @@ things in here.
 ### Code Style
 - Formatter: ruff (black-compatible, line-length 88)
 - Linter: ruff
-- Type checker: ty
+- Type checker: pyrefly (ty is also installed and configured; see `just typecheck-ty`)
 - Docstring convention: Google style
 
 ### Debug Utilities

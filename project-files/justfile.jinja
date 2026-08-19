@@ -2,6 +2,9 @@ default:
     @just --list
 
 typecheck:
+    uv run pyrefly check
+
+typecheck-ty:
     uv run ty check
 
 lint:
