@@ -18,7 +18,6 @@ DEFAULT_LICENSES = [
     "BSD-2-Clause",
     "GPL-2.0-or-later",
     "LGPL-3.0-only",
-    "BSD-0-Clause",
     "ISC",
     "CC0-1.0",
     "Unlicense",

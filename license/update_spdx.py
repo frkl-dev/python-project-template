@@ -34,9 +34,9 @@ UPDATE_EXISTING = False
 LICENSE_LIST_DATA_REPO = 'https://github.com/spdx/license-list-data'
 SPDX_FOLDER = pathlib.Path(__file__).parent / 'license_data/spdx_licenses'
 BLACKLIST = {
-    'CPAL-1.0'  # using too many variables to be added automatically
+    'CPAL-1.0',  # using too many variables to be added automatically
     'CUA-OPL-1.0',
-    'LLPL-1.3c',
+    'LPPL-1.3c',
     'MPL-1.0',
     'MPL-1.1',
     'RPSL-1.0',
