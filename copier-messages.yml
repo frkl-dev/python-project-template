@@ -49,13 +49,19 @@ _message_after_copy: |
   
 
 _message_after_update: |
-  
+
   Your project '{{ project_name }}' has been updated.
-  
+
   Check the changes manually using:
-  
+
     git status
     # and/or
     git diff
-  
+
   In case of conflicts, you'll have to resolve those before committing/pushing the changes to your remote repository.
+
+  NOTE: uv.lock is no longer gitignored -- the lockfile is meant to be committed, CI
+  verifies against it with `uv sync --locked`. If `git status` shows uv.lock as
+  untracked, add and commit it:
+
+    git add uv.lock && git commit -m "build: commit uv lockfile"

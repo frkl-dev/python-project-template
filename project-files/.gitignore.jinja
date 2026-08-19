@@ -1,6 +1,8 @@
 # project-files
 src/{{ project_base_path }}/_version.py
-uv.lock
+# uv.lock is committed on purpose: it pins the dev/CI environment (never consumers),
+# CI verifies against it with `uv sync --locked`, and the weekly dependency-refresh
+# workflow keeps it from going stale.
 pixi.lock
 .pixi/
 # rattler-build's default output directory
@@ -13,4 +15,3 @@ output/
 .vscode
 **/__pycache__/**
 **.egg-info/
-requirements.txt

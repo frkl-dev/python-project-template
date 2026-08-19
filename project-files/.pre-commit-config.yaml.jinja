@@ -6,8 +6,10 @@ repos:
   # uv version.
   rev: 0.8.7
   hooks:
+    # Keeps the committed uv.lock in sync with pyproject.toml (it re-locks on
+    # dependency changes; upgrades within existing constraints come from the
+    # weekly dependency-refresh workflow).
     - id: uv-lock
-    - id: uv-export
 
 - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
   rev: 'v9.20.0'
@@ -67,7 +69,6 @@ repos:
   - id: debug-statements
   - id: end-of-file-fixer
     exclude: '(.*.json|.*.j2)'
-  - id: requirements-txt-fixer
   - id: mixed-line-ending
     args: ['--fix=no']
   - id: no-commit-to-branch

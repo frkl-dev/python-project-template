@@ -4,7 +4,7 @@ inputs:
   python-version:
     description: 'Python version to install'
     required: false
-    # The newest supported version; the lockfile is built against this one.
+    # The newest supported version; used by jobs that don't pin one explicitly.
     default: '{{ python_max_version }}'
 runs:
   using: 'composite'
@@ -16,10 +16,8 @@ runs:
     - name: install Python
       shell: bash
       run: uv python install {% raw %}${{ inputs.python-version }}{% endraw %}
-    - name: create lockfile
-      if: hashFiles('uv.lock') == ''
-      shell: bash
-      run: uv lock --python {% raw %}${{ inputs.python-version }}{% endraw %}
     - name: install the project
+      # `--locked` fails if uv.lock is missing or out of sync with pyproject.toml;
+      # the lockfile is committed, so CI always tests the resolution the repo records.
       shell: bash
       run: uv sync --locked --dev --python {% raw %}${{ inputs.python-version }}{% endraw %}
