@@ -9,7 +9,9 @@ authors = [
     {name = "{{ full_name }}", email = "{{ email }}"}
 ]
 readme = "README.md"
-requires-python = ">={{ python_min_version }},<4.0"
+# No upper bound on purpose: capping requires-python makes pip back-solve to old
+# package versions on future Pythons instead of failing with a clear message.
+requires-python = ">={{ python_min_version }}"
 keywords = []
 {% if all_licenses_are_spdx(project_licenses) -%}
 license = "{{ project_licenses | join(' OR ') }}"
