@@ -93,6 +93,15 @@ fix = true
 target-version = "{{ python_min_tag }}"
 
 [tool.ruff.lint]
+# The ruff defaults (E4, E7, E9, F) plus the rule families this file actually
+# configures: import sorting (I, see `[tool.ruff.lint.isort]`), bugbear and
+# blind-except (B, BLE, see `per-file-ignores`), docstring style (D, see
+# `[tool.ruff.lint.pydocstyle]`) and implicit string concatenation (ISC).
+select = ["E4", "E7", "E9", "F", "I", "B", "BLE", "ISC", "D"]
+ignore = [
+    "D1",     # missing docstrings are allowed; existing ones are still checked
+    "ISC001", # single-line implicit concat conflicts with `ruff format`
+]
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
 [tool.ruff.lint.per-file-ignores]
