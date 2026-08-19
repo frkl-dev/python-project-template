@@ -1,9 +1,8 @@
 import json
 from functools import lru_cache
 from pathlib import Path
-from typing import Any, Dict, List, Set, Union
+from typing import Any
 
-import yaml
 from jinja2 import nodes
 from jinja2.ext import Extension
 
@@ -29,6 +28,10 @@ DEFAULT_LICENSES = [
     "EPL-2.0",
     "0BSD",
 ]
+
+
+class LicenseDataError(Exception):
+    """License data on disk is missing or malformed for a requested license id."""
 
 
 def get_template_root():
@@ -60,19 +63,19 @@ def is_spdx_license(license_id: str) -> bool:
     return (root / "license/license_data/spdx_licenses" / license_id).is_dir()
 
 
-def all_licenses_are_spdx(license_ids: List[str]) -> bool:
+def all_licenses_are_spdx(license_ids: list[str]) -> bool:
     """Check if ALL licenses are SPDX-registered."""
     return all(is_spdx_license(lid) for lid in license_ids)
 
 
 @lru_cache(maxsize=None)
-def available_licenses(display_all: bool = False) -> Set[str]:
+def available_licenses(display_all: bool = False) -> set[str]:
     """Get a list of available licenses from both SPDX and non-SPDX directories."""
 
     template_root = get_template_root()
     license_data_dir = template_root / "license" / "license_data"
 
-    licenses: Set[str] = set()
+    licenses: set[str] = set()
 
     # Scan SPDX licenses (filtered by DEFAULT_LICENSES unless display_all)
     spdx_dir = license_data_dir / "spdx_licenses"
@@ -92,7 +95,7 @@ def available_licenses(display_all: bool = False) -> Set[str]:
 
 
 @lru_cache(maxsize=None)
-def license_data(license_id: str) -> Dict[str, Any] | None:
+def license_data(license_id: str) -> dict[str, Any] | None:
     """Get the license metadata for a license identifier.
 
     Returns details.json content for SPDX licenses, or None for non-SPDX licenses
@@ -107,7 +110,7 @@ def license_data(license_id: str) -> Dict[str, Any] | None:
         text = license_file.read_text()
         data = json.loads(text)
         if not isinstance(data, dict):
-            raise ValueError(f"Invalid license data for {license_id}: not a dictionary")
+            raise LicenseDataError(f"Invalid license data for {license_id}: not a dictionary")
         return data
     else:
         # Non-SPDX licenses may not have details.json
@@ -129,13 +132,13 @@ def license_text(license_id: str) -> str | None:
     return None
 
 
-def license_header(license_ids: List[str]) -> str | None:
+def license_header(license_ids: list[str]) -> str:
     """Get the license header for one or multiple license identifiers."""
     all_headers = {}
     for license_id in license_ids:
         license_dir = get_license_dir(license_id)
         if license_dir is None:
-            raise Exception(f"License id not found: {license_id}")
+            raise LicenseDataError(f"License id not found: {license_id}")
 
         license_file = license_dir / "header.txt"
         if license_file.exists():
@@ -143,9 +146,9 @@ def license_header(license_ids: List[str]) -> str | None:
             if text:
                 all_headers[license_id] = text
             else:
-                raise Exception(f"License header for license not found: {license_id}")
+                raise LicenseDataError(f"License header for license not found: {license_id}")
         else:
-            raise Exception(f"License header file not found: {license_id}")
+            raise LicenseDataError(f"License header file not found: {license_id}")
 
     if len(license_ids) == 1:
         msg = all_headers[license_ids[0]]
@@ -162,11 +165,14 @@ def license_header(license_ids: List[str]) -> str | None:
     else:
         result = msg.strip()
 
+    # The `{% license_header %}` tag is used inside a JSON template
+    # (.license-tools-config.json.jinja), so the header has to be emitted as a
+    # JSON-escaped single-line value: json.dumps produces `"..."`, strip the quotes.
     return json.dumps(result)[1:-1]
 
 
 class LicenseTextExtension(Extension):
-    """Jinja2 extension to map license identifiers to PyPI classifiers."""
+    """Jinja2 extension emitting the full license text for a license id."""
 
     tags = {"license_text"}
 
@@ -176,10 +182,13 @@ class LicenseTextExtension(Extension):
         args = [license_id]
         return nodes.Output([self.call_method("_lookup_text", args)]).set_lineno(lineno)
 
-    def _lookup_text(self, license_id) -> str:
-        """Lookup license text for a license identifier."""
+    def _lookup_text(self, license_id: str) -> str:
+        """Emit the full license text for a license identifier."""
 
-        return license_text(license_id)
+        text = license_text(license_id)
+        if text is None:
+            raise LicenseDataError(f"No license text found for: {license_id}")
+        return text
 
 
 class LicenseListExtension(Extension):
@@ -204,13 +213,13 @@ class LicenseListExtension(Extension):
         ).set_lineno(lineno)
 
     def _lookup_license_list(self, display_all: bool = False):
-        """Lookup PyPI classifier for a license identifier."""
+        """List the license ids available for the selection prompt."""
 
         return sorted(available_licenses(display_all=display_all))
 
 
 class LicenseHeaderExtension(Extension):
-    """Jinja2 extension to map license identifiers to PyPI classifiers."""
+    """Jinja2 extension emitting the source-file header for one or more license ids."""
 
     tags = {"license_header"}
 
@@ -222,8 +231,8 @@ class LicenseHeaderExtension(Extension):
             lineno
         )
 
-    def _lookup_header(self, license_ids) -> str:
-        """Lookup license text for a license identifier."""
+    def _lookup_header(self, license_ids: list[str]) -> str:
+        """Emit the source-file license header for the given license ids."""
 
         return license_header(license_ids)
 
