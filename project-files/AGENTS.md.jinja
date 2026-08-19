@@ -30,6 +30,16 @@ This project uses `uv` for dependency management and `just` as a task runner.
 - `uv run ruff check src . --fix` - Lint with auto-fix
 - `uv run ruff format src .` - Format code
 
+## Dependency Management
+
+- Runtime dependencies live in `[project].dependencies`, dev tooling in the `dev` dependency
+  group (`uv add <pkg>` / `uv add --dev <pkg>`).
+- `uv.lock` is committed. The `uv-lock` pre-commit hook re-locks when `pyproject.toml`
+  changes, and CI installs with `uv sync --locked`, so a stale lockfile fails loudly.
+- A weekly scheduled workflow (`.github/workflows/dependency-refresh.yaml`) runs
+  `uv lock --upgrade`, tests the fresh resolution, and opens a PR with the new lockfile.
+  Don't upgrade dependencies by editing the lockfile by hand.
+
 {% if anaconda_user %}
 ## Conda packaging
 
