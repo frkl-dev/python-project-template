@@ -117,9 +117,6 @@ pip = ">=25.0"
 [tool.pixi.pypi-dependencies]
 "{{ project_slug }}" = { path = ".", editable = true }
 
-[tool.pixi.feature.dev_utils.pypi-dependencies]
-"{{ full_project_slug }}" = { path = ".", editable = true, extras = ["dev"] }
-
 [tool.pixi.environments]
 default = { solve-group = "default" }
 dev = { features = ["dev"] }  # should be the same solve-group, but that doesn't seem to work with pixi currently

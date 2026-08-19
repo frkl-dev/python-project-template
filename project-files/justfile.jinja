@@ -17,7 +17,7 @@ tests:
     uv run pytest tests -s
 
 test pattern:
-    uv run pytest tests -s -k {{pattern}}
+    uv run pytest tests -s -k {% raw %}{{pattern}}{% endraw %}
 
 update-template:
     uvx --with copier-template-extensions copier update --trust -T -A
