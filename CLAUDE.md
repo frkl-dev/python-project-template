@@ -59,6 +59,43 @@ Three non-obvious things, all of which are load-bearing:
 Runtime dependencies are **not** derived from `pyproject.toml` -- `requirements.run` has to be
 maintained by hand. The generated `TODO.md`, `CLAUDE.md` and `AGENTS.md` all say so.
 
+## Python version handling
+
+There is exactly one question -- `python_min_version` -- and everything else is derived from it,
+so the supported range cannot drift. `copier.yml` defines:
+
+- `known_python_versions` (`when: false`) -- the list of versions the template knows about. This
+  is the single place to edit when a new Python ships; it feeds the prompt's `choices`.
+- `python_versions` -- `known_python_versions` sliced from the chosen minimum upwards.
+- `python_max_version` -- the newest supported version.
+- `python_min_tag` -- `py310`-style spelling.
+
+Consumers, all of which must stay derived rather than hardcoded:
+
+| Where | Uses |
+| --- | --- |
+| `pyproject.toml.jinja` `requires-python`, `[tool.pixi.dependencies].python` | `python_min_version` |
+| `pyproject.toml.jinja` classifiers | loop over `python_versions` |
+| `pyproject.toml.jinja` ruff `target-version`, pyupgrade `--pyXY-plus` arg | `python_min_tag` |
+| `build-{linux,darwin,windows}.yaml.jinja` matrices (4 of them) | `python_versions` piped through `tojson` |
+| `setup-uv-env/action.yaml.jinja` default | `python_max_version` |
+| `conda.recipe/recipe.yaml.jinja` `context.python_min` | `python_min_version` |
+
+Only `python_min_version` is written to `.copier-answers.yml`; the derived values are recomputed
+on every render. That means extending `known_python_versions` here automatically widens the CI
+matrix and classifiers of existing projects on their next `copier update`.
+
+**The floor is 3.10, deliberately.** The generated `src/**/__init__.py` uses PEP 604 unions
+(`IO[str] | None`) in function signatures, which are evaluated at def time and raise a TypeError
+on 3.9 -- the old `requires-python = ">=3.9"` was never actually true. Anything added to
+`known_python_versions` has to be able to import the generated package.
+
+`[tool.pyrefly]` deliberately leaves `python-version` unset so each leg of the CI matrix checks
+the interpreter it actually runs on.
+
+Note `scripts/create_test_project.sh` passes `--defaults`, so adding a new question with a
+sensible default does not break the non-interactive test render.
+
 ## Architecture
 
 **Template processing flow:**
@@ -101,6 +138,8 @@ Generated projects use:
 
 - `justfile.jinja` and `Makefile.jinja` expose the same task set. Note the shell `$(...)` in
   `build-conda` has to be written `$$(...)` in the Makefile, since make claims a single `$`.
+- ruff's `target-version` and pyupgrade's `--pyXY-plus` both come from `python_min_tag`; if they
+  ever diverge the two tools fight over the same files.
 - `CLAUDE.md.jinja` and `AGENTS.md.jinja` differ only in the title and first line.
 - The `prefix-dev/rattler-build-action` pin appears twice in `build-linux.yaml.jinja` (the build
   job and the `setup-only` step in the release job).

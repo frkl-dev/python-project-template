@@ -41,6 +41,9 @@ repos:
   rev: v3.21.2
   hooks:
     -   id: pyupgrade
+        # Keep in step with ruff's `target-version`, otherwise the two disagree about
+        # which syntax is allowed to be rewritten.
+        args: [--{{ python_min_tag }}-plus]
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
   # Ruff version. Keep in sync with the `ruff` dev dependency, otherwise the

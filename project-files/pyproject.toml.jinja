@@ -9,7 +9,7 @@ authors = [
     {name = "{{ full_name }}", email = "{{ email }}"}
 ]
 readme = "README.md"
-requires-python = ">=3.9,<4.0"
+requires-python = ">={{ python_min_version }},<4.0"
 keywords = []
 {% if all_licenses_are_spdx(project_licenses) -%}
 license = "{{ project_licenses | join(' OR ') }}"
@@ -17,16 +17,12 @@ license = "{{ project_licenses | join(' OR ') }}"
 license-files = { paths = [{% for license in project_licenses %}"LICENSES/{{ license }}.txt"{% if not loop.last %}, {% endif %}{% endfor %}] }
 {%- endif %}
 classifiers = [
-    "Programming Language :: Python :: 3",
     "Development Status :: 3 - Alpha",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13"
-]
+{% for version in python_versions %}    "Programming Language :: Python :: {{ version }}"{{ "," if not loop.last }}
+{% endfor %}]
 dependencies = [
 ]
 dynamic = ["version"]
@@ -93,8 +89,8 @@ src = ["src", "tests"]
 
 fix = true
 
-# Assume Python 3.10.
-target-version = "py310"
+# The oldest Python the project supports, so ruff does not suggest anything newer.
+target-version = "{{ python_min_tag }}"
 
 [tool.ruff.lint]
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
@@ -128,6 +124,7 @@ channels = ["conda-forge"]
 platforms = ["linux-64", "win-64", "osx-64", "osx-arm64"]
 
 [tool.pixi.dependencies]
+python = ">={{ python_min_version }}"
 pip = ">=25.0"
 
 [tool.pixi.pypi-dependencies]

@@ -91,6 +91,44 @@ project_short_description:
     Please provide a short description for your project
     {% endif %}
 
+# The Python versions this template knows how to target. Adding a newly released Python
+# means extending this one list -- it feeds the prompt below, the CI matrices, the
+# classifiers and the conda recipe.
+#
+# 3.10 is the floor on purpose: the generated `src/**/__init__.py` uses PEP 604 unions
+# (`IO[str] | None`) in signatures, which are evaluated at def time and so raise a
+# TypeError on 3.9. Anything added here must actually be able to import the package.
+known_python_versions:
+  type: yaml
+  default: "['3.10', '3.11', '3.12', '3.13', '3.14']"
+  when: false
+
+python_min_version:
+  type: str
+  help: "The oldest Python version your project supports"
+  default: "3.10"
+  choices: "{{ known_python_versions }}"
+
+# Every known version from the minimum upwards. Drives the CI test matrices and the
+# `Programming Language :: Python :: x.y` classifiers.
+python_versions:
+  type: yaml
+  default: "{{ known_python_versions[known_python_versions.index(python_min_version):] }}"
+  when: false
+
+# The newest supported version; used wherever a single version has to be picked (the
+# default for the `setup-uv-env` action, which builds the lockfile).
+python_max_version:
+  type: str
+  default: "{{ python_versions | last }}"
+  when: false
+
+# `py310`-style spelling, as wanted by ruff's `target-version` and pyupgrade's `--pyXY-plus`.
+python_min_tag:
+  type: str
+  default: "py{{ python_min_version | replace('.', '') }}"
+  when: false
+
 ---
 !include copier-copyright.yml
 ---

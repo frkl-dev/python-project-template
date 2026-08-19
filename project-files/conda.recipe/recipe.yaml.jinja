@@ -10,8 +10,7 @@ context:
   # wheel filename so it always matches what gets published to PyPI. It is unset for
   # local builds, which is what the default is for.
   version: ${{ env.get("PKG_VERSION", default="0.0.0") }}
-  # Keep in sync with the CI test matrix and ruff's `target-version`.
-  python_min: "3.10"
+  python_min: "{% endraw %}{{ python_min_version }}{% raw %}"
 
 package:
   name: {% endraw %}{{ project_slug }}{% raw %}
