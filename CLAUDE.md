@@ -9,13 +9,15 @@ This is a Copier template for Python projects. It generates complete Python deve
 ## Template Development Commands
 
 ```bash
-just download-license <license_ids>  # Download SPDX license data (e.g., MIT, Apache-2.0)
+just update-spdx-licenses  # sync license/license_data/spdx_licenses/ with the upstream SPDX list
 ```
 
 To test template generation:
 ```bash
-copier copy . /path/to/new-project
+copier copy . /path/to/new-project --trust
 ```
+Note that Copier's `-T` is `--skip-tasks`, not `--trust`; passing it skips git init and leaves the
+generated project unbuildable (versions come from git tags).
 
 ## Generated Project Commands
 
