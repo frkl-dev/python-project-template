@@ -196,4 +196,6 @@ jobs:
     - name: merge tag
       run: git merge "${RELEASE_VERSION}"
     - name: push updated main branch
-      run: git push https://{% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}@github.com/{{ github_user }}/{{ project_slug }}.git
+      # actions/checkout leaves its token-backed auth configured for `origin`, so no
+      # token needs to appear on the command line.
+      run: git push origin main
