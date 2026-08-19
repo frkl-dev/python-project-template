@@ -28,7 +28,36 @@ just lint             # ruff check with auto-fix
 just format           # ruff format
 just tests            # pytest tests -s
 just test <pattern>   # pytest -k <pattern>
+just build-conda      # rattler-build (only when anaconda_user is set)
 ```
+
+## Conda packaging
+
+Generated projects get a [rattler-build](https://rattler.build) recipe at
+`conda.recipe/recipe.yaml` (template: `project-files/conda.recipe/recipe.yaml.jinja`), built and
+published by the `build_conda_package` / `release_conda_package` jobs in
+`build-linux.yaml.jinja`. `noarch: python`, so linux builds it once for every platform.
+
+The whole thing is gated on `anaconda_user`: the workflow jobs sit behind `{% if anaconda_user %}`,
+and `copier.yml`'s `_exclude` drops `conda.recipe/` entirely when the answer is empty.
+
+Three non-obvious things, all of which are load-bearing:
+
+- **The recipe packages the wheel, not the source.** rattler-build does not copy `.git` into the
+  build sandbox, so building from source would make `uv-dynamic-versioning` fall back to
+  `fallback-version = "0.0.0"` while the recipe metadata claims the real version. Instead the
+  conda job depends on `build_python_package`, downloads the `build-dists` artifact, and derives
+  `PKG_VERSION` from the wheel filename; the recipe reads it via `env.get("PKG_VERSION")`.
+  `just build-conda` does the same thing locally, which is why it runs `uv build` first.
+- **`use_gitignore: false` on the `../dist` source.** `uv build` writes a `dist/.gitignore`
+  containing `*`, so rattler-build's default would skip the directory and the build script would
+  find no wheel.
+- **`LICENSES/` is pulled in as a second source.** `about.license_file` resolves against the work
+  directory, not the recipe directory, so `../LICENSES/<ID>.txt` silently copies nothing and the
+  build fails with "No license files were copied".
+
+Runtime dependencies are **not** derived from `pyproject.toml` -- `requirements.run` has to be
+maintained by hand. The generated `TODO.md`, `CLAUDE.md` and `AGENTS.md` all say so.
 
 ## Architecture
 
@@ -65,4 +94,27 @@ Generated projects use:
 - **uv**: Dependency management
 - **hatchling** + **uv-dynamic-versioning**: Build backend with git tag versioning
 - **pre-commit**: ruff, pyrefly, commitlint, license-tools, pyupgrade
+- **rattler-build**: conda packages (optional, see above)
 - Commits to `main` branch are blocked by pre-commit
+
+## Things to keep in sync
+
+- `justfile.jinja` and `Makefile.jinja` expose the same task set. Note the shell `$(...)` in
+  `build-conda` has to be written `$$(...)` in the Makefile, since make claims a single `$`.
+- `CLAUDE.md.jinja` and `AGENTS.md.jinja` differ only in the title and first line.
+- The `prefix-dev/rattler-build-action` pin appears twice in `build-linux.yaml.jinja` (the build
+  job and the `setup-only` step in the release job).
+
+## Delimiter collisions
+
+`_templates_suffix: .jinja` means only `.jinja` files are rendered, and undefined variables render
+as the empty string rather than erroring -- so a missed escape produces silently-broken output
+instead of a failed render. Anything meant to reach the generated project must be wrapped in
+`{% raw %}...{% endraw %}`:
+
+- GitHub Actions `${{ matrix.python_version }}` and `${{ secrets.* }}` in the workflows.
+- `just` recipe parameters, e.g. `{{pattern}}` in `justfile.jinja`.
+- **rattler-build expressions** in `conda.recipe/recipe.yaml.jinja` -- it uses the same `${{ ... }}`
+  syntax, so that file is one big raw block that steps out only for Copier values.
+
+Always re-render and read the output rather than trusting the template to read correctly.

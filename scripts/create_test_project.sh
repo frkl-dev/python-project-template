@@ -3,6 +3,11 @@
 project_licenses=$1
 set -euxo pipefail
 
+# Resolve the template root from this script's location rather than hardcoding it, so
+# the script also works from a git worktree (e.g. a feature branch checked out beside
+# the main clone).
+template_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
 rm -rf /tmp/test_project
 
 copier copy --data "full_name=Markus Binsteiner" \
@@ -13,5 +18,5 @@ copier copy --data "full_name=Markus Binsteiner" \
                  --data "project_short_description=A test project." \
                  --data "anaconda_user=freckles" \
                  --vcs-ref=HEAD --trust \
-                 /var/home/markus/projects/my-setup/my-templates/python-template/ \
+                 "${template_dir}" \
                  /tmp/test_project

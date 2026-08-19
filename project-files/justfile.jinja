@@ -22,5 +22,11 @@ tests:
 test pattern:
     uv run pytest tests -s -k {% raw %}{{pattern}}{% endraw %}
 
-update-template:
+{% if anaconda_user %}# build the conda package locally; needs `pixi` on PATH, since rattler-build
+# is a standalone binary and is not distributed on PyPI
+build-conda:
+    uv build
+    PKG_VERSION=$(basename dist/*.whl | cut -d- -f2) pixi exec rattler-build build --recipe conda.recipe/recipe.yaml --channel conda-forge
+
+{% endif %}update-template:
     uvx --with copier-template-extensions copier update --trust -T -A

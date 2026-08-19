@@ -1,0 +1,66 @@
+{% raw %}# rattler-build recipe (https://rattler.build). Build it locally with `just build-conda`.
+#
+# NOTE for template maintainers: rattler-build uses the same `${{ ... }}` expression
+# syntax as Copier's Jinja, so this whole file sits inside a Copier raw block and
+# only steps out of it where a Copier value is actually needed. Without that, Copier
+# renders the expressions away silently and the recipe ends up with empty values
+# instead of failing loudly.
+context:
+  # `PKG_VERSION` is exported by the `build_conda_package` CI job, derived from the
+  # wheel filename so it always matches what gets published to PyPI. It is unset for
+  # local builds, which is what the default is for.
+  version: ${{ env.get("PKG_VERSION", default="0.0.0") }}
+  # Keep in sync with the CI test matrix and ruff's `target-version`.
+  python_min: "3.10"
+
+package:
+  name: {% endraw %}{{ project_slug }}{% raw %}
+  version: ${{ version }}
+
+source:
+  # The wheel produced by `uv build` (in CI: the `build-dists` artifact from the
+  # `build_python_package` job). Packaging the prebuilt wheel rather than building
+  # from source is deliberate -- rattler-build does not copy `.git` into the build
+  # sandbox, so `uv-dynamic-versioning` would fall back to `0.0.0` and the package
+  # contents would disagree with the version recorded above.
+  - path: ../dist
+    # `uv build` drops a `dist/.gitignore` containing `*`, so with rattler-build's
+    # default `use_gitignore: true` the whole directory is skipped and the build
+    # script finds no wheel at all.
+    use_gitignore: false
+  # `license_file` below is resolved against the work directory, not the recipe
+  # directory, so the licenses have to be pulled in as a source of their own.
+  - path: ../LICENSES
+    target_directory: LICENSES
+
+build:
+  # Pure Python, so a single package covers every platform and only the linux
+  # workflow needs to build it.
+  noarch: python
+  script:
+    - python -m pip install --no-deps -vv ./*.whl
+
+requirements:
+  host:
+    - python ${{ python_min }}.*
+    - pip
+  run:
+    - python >=${{ python_min }}
+    # KEEP IN SYNC with `[project].dependencies` in pyproject.toml. conda cannot read
+    # those, so every runtime dependency has to be mirrored here by hand.
+
+tests:
+  - python:
+      imports:
+        - {% endraw %}{{ project_base_module }}
+      pip_check: true
+
+about:
+  homepage: https://github.com/{{ github_user }}/{{ project_slug }}
+  repository: https://github.com/{{ github_user }}/{{ project_slug }}
+  documentation: https://{{ github_user }}.github.io/{{ project_slug }}
+  summary: "{{ project_short_description }}"
+{% if all_licenses_are_spdx(project_licenses) %}  license: {{ project_licenses | join(' OR ') }}
+{% endif %}  license_file:
+{% for license in project_licenses %}    - LICENSES/{{ license }}.txt
+{% endfor -%}

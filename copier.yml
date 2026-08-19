@@ -16,6 +16,8 @@ _exclude:
   - ".svn"
   - "template_docs"
   - "{% if _copier_operation == 'update' -%}TODO.md{% endif %}"
+  # no anaconda user means no conda packaging at all
+  - "{% if not anaconda_user %}conda.recipe{% endif %}"
 _jinja_extensions:
   - copier_templates_extensions.TemplateExtensionLoader
   - misc/jinja_extensions.py:CurrentYearExtension
@@ -98,4 +100,4 @@ github_user:
 
 anaconda_user:
   type: str
-  help: "Your anaconda username or organization (optional)."
+  help: "Your anaconda username or organization (optional). Leave empty to skip conda packaging entirely (no conda.recipe/, no conda CI jobs)."

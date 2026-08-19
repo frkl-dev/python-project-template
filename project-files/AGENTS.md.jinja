@@ -20,7 +20,8 @@ This project uses `uv` for dependency management and `just` as a task runner.
 - `just typecheck-ty` - Run the alternative type checker (ty)
 - `just lint` - Run ruff linter with auto-fix
 - `just format` - Run ruff formatter
-
+{% if anaconda_user %}- `just build-conda` - Build the conda package locally (requires `pixi`)
+{% endif %}
 ### Using uv directly
 - `uv run pytest tests -s` - Run all tests
 - `uv run pytest tests -s -k <pattern>` - Run tests matching pattern
@@ -29,7 +30,21 @@ This project uses `uv` for dependency management and `just` as a task runner.
 - `uv run ruff check src . --fix` - Lint with auto-fix
 - `uv run ruff format src .` - Format code
 
-## Code Architecture
+{% if anaconda_user %}
+## Conda packaging
+
+A `rattler-build` recipe lives in `conda.recipe/recipe.yaml`; `just build-conda` builds it
+locally (needs `pixi` on PATH, since rattler-build is a standalone binary rather than a PyPI
+package). CI builds and publishes it to the `{{ anaconda_user }}` anaconda.org channel.
+
+The recipe packages the wheel from `dist/` rather than building from source, so `uv build` has
+to run first -- `just build-conda` does that for you.
+
+**Important:** the recipe cannot read `pyproject.toml`. Whenever `[project].dependencies`
+changes, mirror the change into `requirements.run` in `conda.recipe/recipe.yaml`, or the conda
+package ships without its dependencies.
+
+{% endif %}## Code Architecture
 
 This package is created from a template project. In case you need to modify something in the generic project setup that would benefit other projects, let me know instead of changing
 things in here.
