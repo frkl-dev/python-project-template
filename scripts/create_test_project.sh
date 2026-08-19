@@ -12,6 +12,6 @@ copier copy --data "full_name=Markus Binsteiner" \
                  --data "project_name=test_project" \
                  --data "project_short_description=A test project." \
                  --data "anaconda_user=freckles" \
-                 -T --vcs-ref=HEAD --trust \
+                 --vcs-ref=HEAD --trust \
                  /var/home/markus/projects/my-setup/my-templates/python-template/ \
                  /tmp/test_project

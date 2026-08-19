@@ -16,9 +16,5 @@ class RenderStringFilter(Extension):
     def render_template(self, context, template_string):
         """Filter to render a template string with current context"""
         template = self.environment.from_string(template_string)
-        print("----")
-        print(list(context.keys()))
-        print(context.get("copyright_holder"))
-        print(context.get("email"))
         # Use the current template's context, which contains all Copier variables
         return template.render(context)
