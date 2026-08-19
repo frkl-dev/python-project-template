@@ -10,6 +10,7 @@ This is a Copier template for Python projects. It generates complete Python deve
 
 ```bash
 just update-spdx-licenses  # sync license/license_data/spdx_licenses/ with the upstream SPDX list
+just lint-self             # ruff over the template's own machinery (license/, misc/)
 ```
 
 To test template generation:

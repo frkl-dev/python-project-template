@@ -1,0 +1,9 @@
+# Config for `just lint-self`: lints the template's own machinery (license/, misc/).
+# The *rendered* project files carry their own ruff config in pyproject.toml.jinja;
+# this file only exists so the generator code gets linted at all.
+
+[lint]
+ignore = [
+    "DTZ011", # `current_year` wants the local date; timezone precision is irrelevant
+    "RUF012", # `tags = {...}` class attributes are jinja2's Extension API
+]

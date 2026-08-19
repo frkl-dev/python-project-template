@@ -1,6 +1,8 @@
 from datetime import date
-from jinja2 import Template, nodes, runtime, pass_context
+
+from jinja2 import pass_context
 from jinja2.ext import Extension
+
 
 class CurrentYearExtension(Extension):
     def __init__(self, environment):

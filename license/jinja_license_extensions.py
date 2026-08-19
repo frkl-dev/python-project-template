@@ -1,5 +1,5 @@
 import json
-from functools import lru_cache
+from functools import cache
 from pathlib import Path
 from typing import Any
 
@@ -68,7 +68,7 @@ def all_licenses_are_spdx(license_ids: list[str]) -> bool:
     return all(is_spdx_license(lid) for lid in license_ids)
 
 
-@lru_cache(maxsize=None)
+@cache
 def available_licenses(display_all: bool = False) -> set[str]:
     """Get a list of available licenses from both SPDX and non-SPDX directories."""
 
@@ -94,7 +94,7 @@ def available_licenses(display_all: bool = False) -> set[str]:
     return licenses
 
 
-@lru_cache(maxsize=None)
+@cache
 def license_data(license_id: str) -> dict[str, Any] | None:
     """Get the license metadata for a license identifier.
 
@@ -117,7 +117,7 @@ def license_data(license_id: str) -> dict[str, Any] | None:
         return None
 
 
-@lru_cache(maxsize=None)
+@cache
 def license_text(license_id: str) -> str | None:
     """Get the license text for a license identifier."""
     license_dir = get_license_dir(license_id)

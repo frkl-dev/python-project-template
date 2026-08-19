@@ -84,9 +84,7 @@ def filter_tags(line: str) -> bool:
     '''Returns false if a copyright or tag line'''
     if line.lower().startswith('copyright'):
         return False
-    if line.startswith('<<') and line.endswith('>>'):
-        return False
-    return True
+    return not (line.startswith('<<') and line.endswith('>>'))
 
 
 def replace_tags(string: str, replacement: str = '') -> str:

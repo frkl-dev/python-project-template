@@ -8,3 +8,8 @@ update-spdx-licenses:
 
 create-test-project-with-license license_ids_comma_separated:
     bash ./scripts/create_test_project.sh {{license_ids_comma_separated}}
+
+# lint the template's own python machinery (config: ruff.toml). The *rendered*
+# project files are linted by the generated projects themselves.
+lint-self:
+    uvx ruff check license/ misc/
