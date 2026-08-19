@@ -140,6 +140,10 @@ Generated projects use:
   `build-conda` has to be written `$$(...)` in the Makefile, since make claims a single `$`.
 - ruff's `target-version` and pyupgrade's `--pyXY-plus` both come from `python_min_tag`; if they
   ever diverge the two tools fight over the same files.
+- The ruff version is pinned in two places: the `ruff-pre-commit` `rev` in
+  `.pre-commit-config.yaml.jinja` and the `ruff-action` `version` in `build-linux.yaml.jinja`.
+  If they drift, the hook and CI disagree about what is clean. (The `ruff` dev dependency is
+  deliberately unpinned and can run ahead.)
 - `CLAUDE.md.jinja` and `AGENTS.md.jinja` differ only in the title and first line.
 - The `prefix-dev/rattler-build-action` pin appears twice in `build-linux.yaml.jinja` (the build
   job and the `setup-only` step in the release job).

@@ -87,7 +87,9 @@ line-length = 88
 
 src = ["src", "tests"]
 
-fix = true
+# No `fix = true` here on purpose: with it, a bare `ruff check` (e.g. in CI) applies
+# fixes and exits 0, so fixable violations pass silently. Fixing is opted into where
+# it is wanted: `just lint` and the pre-commit hook both pass `--fix` explicitly.
 
 # The oldest Python the project supports, so ruff does not suggest anything newer.
 target-version = "{{ python_min_tag }}"

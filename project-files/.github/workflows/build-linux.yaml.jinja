@@ -53,12 +53,15 @@ jobs:
           fetch-depth: 0
       - uses: astral-sh/ruff-action@v3
         with:
-          version: "latest"
+          # Keep in sync with the ruff-pre-commit rev in .pre-commit-config.yaml,
+          # otherwise CI and the hook disagree about what is clean (and "latest"
+          # turns every new ruff release into a surprise CI failure).
+          version: "0.16.3"
           args: "--version"
       - name: Run ruff check
-        run: ruff check src/
-      - name: Run ruff check
-        run: ruff format --check --diff src/
+        run: ruff check --no-fix .
+      - name: Run ruff format check
+        run: ruff format --check --diff .
 
   build_python_package:
     name: build python package
