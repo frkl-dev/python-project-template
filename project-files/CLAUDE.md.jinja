@@ -27,8 +27,8 @@ This project uses `uv` for dependency management and `just` as a task runner.
 - `uv run pytest tests -s -k <pattern>` - Run tests matching pattern
 - `uv run pyrefly check` - Type check
 - `uv run ty check` - Type check with ty instead
-- `uv run ruff check src . --fix` - Lint with auto-fix
-- `uv run ruff format src .` - Format code
+- `uv run ruff check . --fix` - Lint with auto-fix
+- `uv run ruff format .` - Format code
 
 ## Dependency Management
 

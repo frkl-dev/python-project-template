@@ -20,10 +20,10 @@ typecheck-ty:
 	uv run ty check
 
 lint:
-	uv run ruff check src . --fix
+	uv run ruff check . --fix
 
 format:
-	uv run ruff format src .
+	uv run ruff format .
 
 tests:
 	uv run pytest tests -s
