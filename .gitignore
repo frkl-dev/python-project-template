@@ -1,0 +1,3 @@
+# Byte-compiled Python from the Jinja extensions in license/ and misc/
+__pycache__/
+*.py[cod]
