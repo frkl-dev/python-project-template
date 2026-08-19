@@ -85,7 +85,7 @@ Only `python_min_version` is written to `.copier-answers.yml`; the derived value
 on every render. That means extending `known_python_versions` here automatically widens the CI
 matrix and classifiers of existing projects on their next `copier update`.
 
-**The floor is 3.10, deliberately.** The generated `src/**/__init__.py` uses PEP 604 unions
+**The floor is 3.10, deliberately.** The generated `src/**/_debug.py` uses PEP 604 unions
 (`IO[str] | None`) in function signatures, which are evaluated at def time and raise a TypeError
 on 3.9 -- the old `requires-python = ">=3.9"` was never actually true. Anything added to
 `known_python_versions` has to be able to import the generated package.

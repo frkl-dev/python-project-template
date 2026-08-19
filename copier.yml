@@ -95,7 +95,7 @@ project_short_description:
 # means extending this one list -- it feeds the prompt below, the CI matrices, the
 # classifiers and the conda recipe.
 #
-# 3.10 is the floor on purpose: the generated `src/**/__init__.py` uses PEP 604 unions
+# 3.10 is the floor on purpose: the generated `src/**/_debug.py` uses PEP 604 unions
 # (`IO[str] | None`) in signatures, which are evaluated at def time and so raise a
 # TypeError on 3.9. Anything added here must actually be able to import the package.
 known_python_versions:

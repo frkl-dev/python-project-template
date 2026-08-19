@@ -2,6 +2,9 @@
 
 import pytest
 
+# Installs the dbg/DBG/ic/insp/wat builtins (and activates snoop) for all tests.
+import {{ project_base_module }}._debug  # noqa: F401
+
 
 @pytest.fixture
 def sample_fixture():

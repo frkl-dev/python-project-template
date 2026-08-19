@@ -70,7 +70,10 @@ things in here.
 - Docstring convention: Google style
 
 ### Debug Utilities
-The package `__init__.py` sets up several debug helpers as builtins when dev dependencies are installed:
+Importing `{{ project_base_module }}._debug` installs several debug helpers as builtins (when the
+dev dependencies are available). `tests/conftest.py` imports it, so they are always usable in
+tests; in a script or REPL, run `import {{ project_base_module }}._debug` first. The package
+itself never imports it, so consumer imports stay side-effect free.
 - `dbg()` - Rich print for debugging
 - `DBG()` - devtools debug
 - `ic()` - icecream debugger
