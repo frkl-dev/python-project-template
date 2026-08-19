@@ -15,7 +15,7 @@ create. You do have to register the publisher first:
    - Owner: `{{ github_user }}`
    - Repository name: `{{ project_slug }}`
    - Workflow name: `build-linux.yaml`
-   - Environment name: *(leave empty)*
+   - Environment name: `pypi`
 
 Releases are triggered by pushing a tag; the version comes from that tag via
 `uv-dynamic-versioning`, so `git tag 0.1.0 && git push --tags` is all it takes.

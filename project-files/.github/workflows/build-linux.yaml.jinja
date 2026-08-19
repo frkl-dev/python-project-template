@@ -2,6 +2,12 @@ name: "linux tests and package builds for '{{ project_slug }}'"
 # This workflow is triggered on pushes to the repository.
 on: [push]
 
+# Superseded runs on the same ref are cancelled; tag refs are unique, so release
+# runs are never affected.
+concurrency:
+  group: {% raw %}${{ github.workflow }}-${{ github.ref }}{% endraw %}
+  cancel-in-progress: true
+
 jobs:
 
   commitlint:
@@ -91,6 +97,9 @@ jobs:
       - build_conda_package{% endif %}
     permissions:
       id-token: write
+    # Trusted publishing is registered against this environment name (see TODO.md);
+    # GitHub creates the environment on first use.
+    environment: pypi
     steps:
       - name: Retrieve build distributions
         uses: actions/download-artifact@v7
